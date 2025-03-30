@@ -1,0 +1,22 @@
+﻿@page
+@model KahootTeamRealTime.Pages.QuizRealTime.AnswerQuizModel
+@{
+    ViewData["Title"] = "Answer Quiz";
+}
+<div class="quiz-container">
+    <h1>Quizzing!</h1>
+    <h3>@Model.Question</h3>
+
+    <form method="post" class="quiz-form">
+        @foreach (var answer in Model.Answers)
+        {
+            <label class="answer-option">
+                <input type="radio" name="SelectedAnswer" value="@answer.Id" required>
+                <span>@answer.Content</span>
+            </label>
+        }
+        <button type="submit" class="submit-btn">Submit</button>
+    </form>
+</div>
+
+<link rel="stylesheet" href="~/css/quiz.css">

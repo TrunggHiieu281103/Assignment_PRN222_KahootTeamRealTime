@@ -1,0 +1,20 @@
+﻿@page
+@model KahootTeamRealTime.Pages.QuizRealTime.RoomUsersModel
+@{
+    ViewData["Title"] = "Room Users";
+}
+<h2>Room Users</h2>
+<p>Room Code: <span id="roomCode">@Model.RoomCode</span></p>
+<p>Username: <span id="username">@Model.Username</span></p>
+
+<ul id="userList">
+    @foreach (var user in Model.Users)
+    {
+        <li>@user</li>
+    }
+</ul>
+
+<button id="leaveRoomButton">Leave Room</button>
+
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/QuizClient.js"></script>

@@ -1,0 +1,22 @@
+﻿@page
+@model KahootTeamRealTime.Pages.QuizRealTime.JoinRoomModel
+@{
+    ViewData["Title"] = "Join Room";
+}
+
+<h2>Join a Quiz Room</h2>
+
+<form method="post">
+    <label>Room Code:</label>
+    <input type="number" asp-for="RoomCode" required />
+
+    <label>Username:</label>
+    <input type="text" asp-for="Username" required />
+
+    <button type="submit">Join Room</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <p style="color: red;">@Model.ErrorMessage</p>
+}

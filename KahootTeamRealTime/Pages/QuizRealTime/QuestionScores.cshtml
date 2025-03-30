@@ -1,0 +1,14 @@
+﻿@page
+@model KahootTeamRealTime.Pages.QuizRealTime.QuestionScoresModel
+@{
+    ViewData["Title"] = "Question Scores";
+}
+
+<h2>Points after Question</h2>
+
+<ul>
+    @foreach (var user in Model.UserPoints)
+    {
+        <li>@user.Name: @user.Points</li>
+    }
+</ul>

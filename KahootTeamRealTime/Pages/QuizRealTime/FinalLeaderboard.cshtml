@@ -1,0 +1,21 @@
+﻿@page
+@model KahootTeamRealTime.Pages.QuizRealTime.FinalLeaderboardModel
+@{
+    ViewData["Title"] = "Final Leaderboard";
+}
+
+<h2>Top 3 Players</h2>
+<ul>
+    @foreach (var user in Model.Top3)
+    {
+        <li>@user.Name: @user.Points</li>
+    }
+</ul>
+
+<h2>All Players</h2>
+<ul>
+    @foreach (var user in Model.AllPlayers)
+    {
+        <li>@user.Name: @user.Points</li>
+    }
+</ul>
