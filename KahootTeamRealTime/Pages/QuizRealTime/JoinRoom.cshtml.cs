@@ -27,7 +27,7 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
             var room = _context.Rooms.FirstOrDefault(r => r.RoomCode == RoomCode);
             if (room == null)
             {
-                ErrorMessage = "Room not found!";
+                ErrorMessage = "Room không tồn tại!";
                 return Page();
             }
 
@@ -45,15 +45,10 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
             {
                 _context.UserRooms.Add(new UserRoom { UserId = user.Id, RoomId = room.Id });
                 await _context.SaveChangesAsync();
+
+                // Gửi sự kiện đến tất cả client để cập nhật danh sách người dùng
+                await _hubContext.Clients.All.SendAsync("ReceiveUserJoined", RoomCode);
             }
-
-            // Gửi sự kiện cập nhật danh sách người dùng trong phòng qua SignalR
-            var usersInRoom = _context.UserRooms
-                .Where(ur => ur.RoomId == room.Id)
-                .Select(ur => ur.User.Username)
-                .ToList();
-
-            await _hubContext.Clients.Group(RoomCode.ToString()).SendAsync("UpdateRoomUsers", usersInRoom);
 
             return RedirectToPage("RoomUsers", new { roomCode = RoomCode, username = Username });
         }

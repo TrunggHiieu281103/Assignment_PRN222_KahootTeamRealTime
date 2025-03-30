@@ -10,13 +10,12 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
 {
     public class RoomUsersModel : PageModel
     {
-        private readonly IHubContext<QuizHub> _hubContext;
+     
         private readonly RealtimeQuizDbContext _context;
 
-        public RoomUsersModel(RealtimeQuizDbContext context, IHubContext<QuizHub> hubContext)
+        public RoomUsersModel(RealtimeQuizDbContext context)
         {
             _context = context;
-            _hubContext = hubContext;
         }
 
         public int RoomCode { get; set; }

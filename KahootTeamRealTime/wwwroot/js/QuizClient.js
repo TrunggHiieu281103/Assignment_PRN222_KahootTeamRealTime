@@ -1,42 +1,62 @@
 ﻿"use strict";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/quizHub").build();
+function initializeSignalR() {
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/quizHub") // URL của SignalR hub
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
 
-connection.start().then(function () {
-    console.log("Connected to QuizHub");
-
-    var roomCode = document.getElementById("roomCode").textContent;
-    var username = document.getElementById("username").textContent;
-
-    connection.invoke("JoinRoom", roomCode, username).catch(function (err) {
-        return console.error("Error joining room:", err.toString());
-    });
-}).catch(function (err) {
-    console.error("Error connecting to QuizHub:", err.toString());
-});
-
-// Cập nhật danh sách người chơi
-connection.on("UpdateRoomUsers", function (users) {
-    const userList = document.getElementById("userList");
-    userList.innerHTML = "";
-
-    users.forEach(user => {
-        const li = document.createElement("li");
-        li.textContent = user;
-        userList.appendChild(li);
+    connection.on("ReceiveUserJoined", function (roomCode) {
+        updateRoomUser(roomCode);
     });
 
-    console.log("Updated room users:", users);
-});
+    function updateRoomUser(roomCode) {
+        // Get the current URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get("username") || "N/A";
 
-// Gửi yêu cầu rời phòng khi người chơi nhấn "Leave Room"
-document.getElementById("leaveRoomButton").addEventListener("click", function () {
-    var roomCode = document.getElementById("roomCode").textContent;
-    var username = document.getElementById("username").textContent;
+        // Fetch updated room users
+        fetch(`/QuizRealTime/RoomUsers?roomCode=${roomCode}&username=${encodeURIComponent(username)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch updated user list");
+                }
+                return response.text();
+            })
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+                const newUserList = doc.querySelector("#userList");
+                if (newUserList) {
+                    document.querySelector("#userList").outerHTML = newUserList.outerHTML;
+                }
+            })
+            .catch(err => console.error("Error updating user list: ", err));
+    }
 
-    connection.invoke("LeaveRoom", roomCode, username).catch(function (err) {
-        return console.error("Error leaving room:", err.toString());
+    // Start the connection
+    connection.start()
+        .then(() => console.log("SignalR connection established"))
+        .catch(err => console.error("SignalR connection error: ", err));
+
+    // Handle connection closure and attempt reconnection
+    connection.onclose(() => {
+        console.log("SignalR connection closed. Attempting to reconnect...");
+        setTimeout(() => startConnection(connection), 2000);
     });
 
-    window.location.href = "/QuizRealTime/JoinRoom"; // Chuyển hướng về trang Join Room
+    function startConnection(conn) {
+        conn.start()
+            .then(() => console.log("SignalR reconnected"))
+            .catch(err => console.error("Reconnection failed: ", err));
+    }
+
+    return connection;
+}
+
+// Initialize SignalR on page load
+document.addEventListener("DOMContentLoaded", function () {
+    if (document.querySelector("#userList")) {
+        initializeSignalR();
+    }
 });
