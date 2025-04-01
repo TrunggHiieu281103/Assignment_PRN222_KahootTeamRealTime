@@ -1,5 +1,6 @@
 using KahootTeamRealTime.HubSginalR;
 using Microsoft.EntityFrameworkCore;
+using Repositories.Infrastructures;
 using Repositories.Models;
 
 namespace KahootTeamRealTime
@@ -9,7 +10,8 @@ namespace KahootTeamRealTime
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+          //  builder.Services.AddScoped<RealtimeQuizDbContext>();
+            builder.Services.AddScoped<UnitOfWork>();
             // Add services to the container.
             builder.Services.AddRazorPages();
 
