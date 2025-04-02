@@ -10,9 +10,5 @@ namespace KahootTeamRealTime.HubSginalR
             await Clients.All.SendAsync("ReceiveUserJoined", roomCode);
         }
 
-        public async Task LeaveRoom(int roomCode)
-        {
-            await Clients.All.SendAsync("ReceiveUserLeaved", roomCode);
-        }
     }
 }
