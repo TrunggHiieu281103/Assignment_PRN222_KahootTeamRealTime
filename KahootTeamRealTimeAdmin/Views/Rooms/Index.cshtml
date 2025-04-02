@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Repositories.Models.Room>
+
+@{
+    ViewData["Title"] = "Rooms";
+}
+
+<h1>Rooms</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Room</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Room Code</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.RoomCode</td>
+                <td>@item.CreatedAt</td>
+                <td>
+                    <a asp-controller="Questions" asp-action="Index" asp-route-roomId="@item.Id" class="btn btn-info">Manage Questions</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
