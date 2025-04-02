@@ -1,4 +1,4 @@
-using KahootTeamRealTime.HubSginalR;
+﻿using KahootTeamRealTime.HubSginalR;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Infrastructures;
 using Repositories.Models;
@@ -24,6 +24,16 @@ namespace KahootTeamRealTime
                 e.EnableDetailedErrors = true;
                 e.MaximumReceiveMessageSize = 102400000;
             });
+
+            builder.Services.AddDistributedMemoryCache(); // Bộ nhớ cache cho session
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Session hết hạn sau 30 phút
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true; // Đảm bảo session hoạt động ngay cả khi từ chối cookie không cần thiết
+            });
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -40,6 +50,8 @@ namespace KahootTeamRealTime
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseSession(); // Bật Session Middleware
 
             app.UseAuthorization();
 

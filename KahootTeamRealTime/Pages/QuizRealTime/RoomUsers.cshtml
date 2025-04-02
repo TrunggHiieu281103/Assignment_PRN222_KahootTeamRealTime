@@ -14,7 +14,18 @@
     }
 </ul>
 
-<button id="leaveRoomButton">Leave Room</button>
+<form method="post" asp-page-handler="LeaveRoom">
+    <input type="hidden" name="roomCode" value="@Model.RoomCode" />
+    <input type="hidden" name="username" value="@Model.Username" />
+    <button type="submit">Leave Room</button>
+</form>
+
+<form method="get" asp-page="AnswerQuiz">
+    <input type="hidden" name="username" value="@Model.Username" />
+    <input type="hidden" name="roomCode" value="@Model.RoomCode" />
+    <button type="submit">Start Quiz</button>
+</form>
+
 
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/QuizClient.js"></script>

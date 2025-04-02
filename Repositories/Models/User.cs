@@ -11,7 +11,7 @@ public partial class User
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual Score? Score { get; set; }
+    public virtual ICollection<Score> Scores { get; set; } = new List<Score>();
 
     public virtual ICollection<UserAnswer> UserAnswers { get; set; } = new List<UserAnswer>();
 

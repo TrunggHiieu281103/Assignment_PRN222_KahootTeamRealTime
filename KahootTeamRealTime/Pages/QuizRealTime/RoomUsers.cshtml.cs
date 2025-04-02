@@ -4,18 +4,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Models;
-using KahootTeamRealTime.HubSginalR;
 
 namespace KahootTeamRealTime.Pages.QuizRealTime
 {
     public class RoomUsersModel : PageModel
     {
-     
-        private readonly RealtimeQuizDbContext _context;
 
-        public RoomUsersModel(RealtimeQuizDbContext context)
+        private readonly RealtimeQuizDbContext _context;
+        private readonly IHubContext<QuizHub> _hubContext;
+
+        public RoomUsersModel(RealtimeQuizDbContext context, IHubContext<QuizHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         public int RoomCode { get; set; }
@@ -38,7 +39,7 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
                 .ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(int roomCode, string username)
+        public async Task<IActionResult> OnPostLeaveRoomAsync(int roomCode, string username)
         {
             var user = _context.Users.FirstOrDefault(u => u.Username == username);
             if (user != null)
@@ -48,6 +49,10 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
                 {
                     _context.UserRooms.Remove(userRoom);
                     await _context.SaveChangesAsync();
+
+                    // Gửi sự kiện SignalR để thông báo rằng người dùng đã rời phòng
+                    await _hubContext.Clients.All.SendAsync("ReceiveUserJoined", roomCode);
+
                 }
             }
 

@@ -1,3 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Repositories.Infrastructures;
+using Repositories.Models;
+using Services.Interfaces;
+using Services.Services;
+
 namespace KahootTeamRealTimeAdmin
 {
     public class Program
@@ -8,6 +14,13 @@ namespace KahootTeamRealTimeAdmin
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<RealtimeQuizDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddScoped<UnitOfWork>();
+            builder.Services.AddScoped<IRoomService, RoomService>();
+            builder.Services.AddScoped<IQuestionService, QuestionService>();
+            builder.Services.AddScoped<IAnswerService, AnswerService>();
 
             var app = builder.Build();
 
@@ -29,6 +42,7 @@ namespace KahootTeamRealTimeAdmin
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Account}/{action=Login}/{id?}");
+
 
 
             app.Run();

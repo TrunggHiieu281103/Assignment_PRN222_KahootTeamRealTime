@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Repositories.Models.Question>
+
+@{
+    ViewData["Title"] = "Add Existing Questions";
+    var roomId = ViewBag.RoomId as Guid?;
+}
+
+<h1>Add Existing Questions to Room</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Content</th>
+            <th>Answers Count</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Content</td>
+                <td>@item.Answers.Count</td>
+                <td>
+                    <form asp-action="AddToRoom" method="post">
+                        <input type="hidden" name="roomId" value="@roomId" />
+                        <input type="hidden" name="questionId" value="@item.Id" />
+                        <button type="submit" class="btn btn-primary">Add to Room</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Index" asp-route-roomId="@roomId" class="btn btn-secondary">Back to Room Questions</a>
+</div>

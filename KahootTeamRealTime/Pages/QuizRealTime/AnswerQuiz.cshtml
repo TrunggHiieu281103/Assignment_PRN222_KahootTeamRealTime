@@ -3,20 +3,35 @@
 @{
     ViewData["Title"] = "Answer Quiz";
 }
+<h2>Room Code: <span id="roomCode">@Model.RoomCode</span></h2>
+<h2>Username: <span id="username">@Model.Username</span></h2>
+
 <div class="quiz-container">
     <h1>Quizzing!</h1>
-    <h3>@Model.Question</h3>
 
-    <form method="post" class="quiz-form">
-        @foreach (var answer in Model.Answers)
-        {
-            <label class="answer-option">
-                <input type="radio" name="SelectedAnswer" value="@answer.Id" required>
-                <span>@answer.Content</span>
-            </label>
-        }
-        <button type="submit" class="submit-btn">Submit</button>
-    </form>
+    @if (!string.IsNullOrEmpty(Model.Question))
+    {
+        <h3>@Model.Question</h3>
+
+        <form method="post" class="quiz-form">
+            <input type="hidden" name="roomCode" value="@Model.RoomCode" />
+            <input type="hidden" name="username" value="@Model.Username" />
+
+            @foreach (var answer in Model.Answers)
+            {
+                <label class="answer-option">
+                    <input type="radio" name="SelectedAnswer" value="@answer.Id" required>
+                    <span>@answer.Content</span>
+                </label>
+            }
+
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+    }
+    else
+    {
+        <p>No questions available.</p>
+    }
 </div>
 
 <link rel="stylesheet" href="~/css/quiz.css">
