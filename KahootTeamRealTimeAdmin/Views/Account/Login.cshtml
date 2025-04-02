@@ -1,0 +1,47 @@
+﻿@model KahootTeamRealTimeAdmin.Models.LoginModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="~/css/login.css">
+</head>
+<body>
+    <h1>Kahoot Team RealTime Admin</h1>
+
+    <div class="wrapper">
+        <form asp-action="Login" asp-controller="Account" method="post">
+            <h2>Login</h2>
+
+            <div class="input-field">
+                <input asp-for="UserNameOrEmail" required>
+                <label asp-for="UserNameOrEmail">Enter your email</label>
+            </div>
+            <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
+
+            <div class="input-field">
+                <input asp-for="Password" type="password" required>
+                <label asp-for="Password">Enter your password</label>
+            </div>
+            <span asp-validation-for="Password" class="text-danger"></span>
+
+            <button type="submit">Log In</button>
+
+            @* <div class="register"> *@
+            @*     <p>Don't have an account? <a href="#">Register</a></p> *@
+            @* </div> *@
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <p class="text-danger">Tên đăng nhập hoặc mật khẩu không đúng.</p>
+            }
+        </form>
+    </div>
+</body>
+</html>

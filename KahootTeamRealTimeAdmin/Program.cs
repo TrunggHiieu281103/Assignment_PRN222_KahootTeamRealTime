@@ -41,7 +41,9 @@ namespace KahootTeamRealTimeAdmin
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Rooms}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
+
+
 
             app.Run();
         }
