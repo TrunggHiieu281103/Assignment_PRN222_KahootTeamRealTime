@@ -11,5 +11,7 @@ public partial class Question
 
     public virtual ICollection<Answer> Answers { get; set; } = new List<Answer>();
 
+    public virtual ICollection<RoomQuestion> RoomQuestions { get; set; } = new List<RoomQuestion>();
+
     public virtual ICollection<UserAnswer> UserAnswers { get; set; } = new List<UserAnswer>();
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repositories.Infrastructures
 {
-   public class UnitOfWork
+    public class UnitOfWork
     {
         private readonly RealtimeQuizDbContext _context;
         private readonly ILogger _logger;

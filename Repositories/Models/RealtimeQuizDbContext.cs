@@ -21,6 +21,8 @@ public partial class RealtimeQuizDbContext : DbContext
 
     public virtual DbSet<Room> Rooms { get; set; }
 
+    public virtual DbSet<RoomQuestion> RoomQuestions { get; set; }
+
     public virtual DbSet<Score> Scores { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -37,7 +39,7 @@ public partial class RealtimeQuizDbContext : DbContext
     {
         modelBuilder.Entity<Answer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Answer__3214EC0737D92CD0");
+            entity.HasKey(e => e.Id).HasName("PK__Answer__3214EC075BC6E812");
 
             entity.ToTable("Answer");
 
@@ -51,7 +53,7 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<Question>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Question__3214EC078246563F");
+            entity.HasKey(e => e.Id).HasName("PK__Question__3214EC07FC6084B0");
 
             entity.ToTable("Question");
 
@@ -61,9 +63,11 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<Room>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Room__3214EC07613F3165");
+            entity.HasKey(e => e.Id).HasName("PK__Room__3214EC076F6517E0");
 
             entity.ToTable("Room");
+
+            entity.HasIndex(e => e.RoomCode, "UQ__Room__4F9D5231B04E46C1").IsUnique();
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedAt)
@@ -73,27 +77,46 @@ public partial class RealtimeQuizDbContext : DbContext
             entity.Property(e => e.RoomCode).ValueGeneratedOnAdd();
         });
 
+        modelBuilder.Entity<RoomQuestion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__RoomQues__3214EC078130BA38");
+
+            entity.ToTable("RoomQuestion");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+            entity.HasOne(d => d.Question).WithMany(p => p.RoomQuestions)
+                .HasForeignKey(d => d.QuestionId)
+                .HasConstraintName("FK_RoomQuestion_Question");
+
+            entity.HasOne(d => d.Room).WithMany(p => p.RoomQuestions)
+                .HasForeignKey(d => d.RoomId)
+                .HasConstraintName("FK_RoomQuestion_Room");
+        });
+
         modelBuilder.Entity<Score>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Score__3214EC070C4586A9");
+            entity.HasKey(e => e.Id).HasName("PK__Score__3214EC07A0273D6B");
 
             entity.ToTable("Score");
-
-            entity.HasIndex(e => e.UserId, "UQ__Score__1788CC4DA0985886").IsUnique();
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.TotalPoints).HasDefaultValue(0);
 
-            entity.HasOne(d => d.User).WithOne(p => p.Score)
-                .HasForeignKey<Score>(d => d.UserId)
+            entity.HasOne(d => d.Room).WithMany(p => p.Scores)
+                .HasForeignKey(d => d.RoomId)
+                .HasConstraintName("FK_Score_Room");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Scores)
+                .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_Score_User");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC076135AE7A");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC07FB0EB22D");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4702826A2").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4007F5144").IsUnique();
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedAt)
@@ -104,7 +127,7 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<UserAnswer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__UserAnsw__3214EC07F6E96FEA");
+            entity.HasKey(e => e.Id).HasName("PK__UserAnsw__3214EC073D943E2C");
 
             entity.ToTable("UserAnswer");
 
@@ -122,6 +145,10 @@ public partial class RealtimeQuizDbContext : DbContext
                 .HasForeignKey(d => d.QuestionId)
                 .HasConstraintName("FK_UserAnswer_Question");
 
+            entity.HasOne(d => d.Room).WithMany(p => p.UserAnswers)
+                .HasForeignKey(d => d.RoomId)
+                .HasConstraintName("FK_UserAnswer_Room");
+
             entity.HasOne(d => d.User).WithMany(p => p.UserAnswers)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_UserAnswer_User");
@@ -129,7 +156,7 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<UserRoom>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__UserRoom__3214EC07DD0005D6");
+            entity.HasKey(e => e.Id).HasName("PK__UserRoom__3214EC0707FE1804");
 
             entity.ToTable("UserRoom");
 
