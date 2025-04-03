@@ -14,7 +14,7 @@
         <h3>@Model.Question</h3>
         <p><strong>Question:</strong> @Model.QuestionIndex / @Model.TotalQuestions</p> <!-- Hiển thị số câu hỏi -->
 
-        <div id="timer" class="timer">10</div> <!-- Hiển thị thời gian còn lại -->
+        <div class="timer">@Model.TimeLeft</div> <!-- Hiển thị thời gian còn lại -->
 
         <form method="post" class="quiz-form" id="quizForm">
             <input type="hidden" name="roomCode" value="@Model.RoomCode" />
@@ -29,7 +29,7 @@
                 </label>
             }
 
-            <button type="button" class="submit-btn" id="submitBtn">Submit</button>
+            <button type="submit" class="submit-btn" >Submit</button>
         </form>
 
         <div id="resultMessage" class="hidden"></div> <!-- Hiển thị kết quả -->
@@ -43,58 +43,17 @@
 <link rel="stylesheet" href="~/css/quiz.css">
 
 <script>
-    let timeLeft = 10;
-    let timerElement = document.getElementById("timer");
-    let resultMessage = document.getElementById("resultMessage");
-    let quizForm = document.getElementById("quizForm");
-    let submitBtn = document.getElementById("submitBtn");
-    let selectedAnswer = null;
-    let isSubmitted = false; // Để kiểm soát việc submit chỉ một lần
+    let timeLeft = @Model.TimeLeft;
+    let timerElement = document.querySelector('.timer');
 
-    function startTimer() {
-        let countdown = setInterval(() => {
+    function updateTimer() {
+        if (timeLeft > 0) {
             timeLeft--;
             timerElement.innerText = timeLeft;
-
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                goToNextQuestion();
-            }
-        }, 1000);
-    }
-
-    function submitAnswer() {
-        if (isSubmitted) return; // Đảm bảo chỉ gửi 1 lần
-        isSubmitted = true;
-
-        submitBtn.disabled = true; // Vô hiệu hóa nút submit
-        selectedAnswer = document.querySelector('input[name="SelectedAnswer"]:checked');
-
-        let formData = new FormData(quizForm);
-        fetch(window.location.pathname, {
-            method: "POST",
-            body: formData,
-        })
-            .then(response => response.json())
-            .then(data => {
-                resultMessage.innerText = data.isCorrect ? "Correct Answer!" : "Wrong Answer!";
-                resultMessage.style.color = data.isCorrect ? "green" : "red";
-                resultMessage.classList.remove("hidden");
-            });
-    }
-
-    function goToNextQuestion() {
-        let roomCode = document.getElementById("roomCode").innerText;
-        let username = document.getElementById("username").innerText;
-        let questionIndex = parseInt(document.getElementById("questionIndex").value) + 1;
-
-        if (questionIndex >= @Model.TotalQuestions) {
-            window.location.href = "/QuizCompleted"; // Chuyển đến trang hoàn thành quiz nếu hết câu hỏi
         } else {
-            window.location.href = `${window.location.pathname}?roomCode=${roomCode}&username=${username}&questionIndex=${questionIndex}`;
+            document.getElementById("quizForm").submit();
         }
     }
 
-    submitBtn.addEventListener("click", submitAnswer);
-    startTimer();
+    setInterval(updateTimer, 1000);
 </script>
