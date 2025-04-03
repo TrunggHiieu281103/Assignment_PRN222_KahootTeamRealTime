@@ -51,5 +51,22 @@ namespace Repositories.Repositories
 
             _context.RoomQuestions.Add(roomQuestion);
         }
+
+        public IEnumerable<Question> GetQuestionsByRoomCode(int roomCode)
+        {
+            var room = _context.Rooms.FirstOrDefault(r => r.RoomCode == roomCode);
+            if (room == null)
+            {
+                return new List<Question>(); // Trả về danh sách rỗng nếu không tìm thấy phòng
+            }
+
+            return _context.RoomQuestions
+                .Where(rq => rq.RoomId == room.Id)
+                .Include(rq => rq.Question)
+                .ThenInclude(q => q.Answers) // Nếu cần lấy cả danh sách câu trả lời
+                .Select(rq => rq.Question)
+                .ToList();
+        }
+
     }
 }

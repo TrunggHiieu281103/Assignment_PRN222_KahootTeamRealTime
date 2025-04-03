@@ -14,5 +14,7 @@ namespace Services.Interfaces
         Task<IEnumerable<Question>> GetQuestionsWithAnswersAsync();
         Task<IEnumerable<Question>> GetQuestionsForRoomAsync(Guid roomId);
         Task AddQuestionToRoomAsync(Guid roomId, Guid questionId);
+        Task<IEnumerable<Question>> GetQuestionsByRoomCodeAsync(int roomCode);
+
     }
 }
