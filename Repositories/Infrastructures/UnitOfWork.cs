@@ -21,10 +21,6 @@ namespace Repositories.Infrastructures
         private AdministratorRepository _administratorRepository;
         private RoleRepository _roleRepository;
 
-
-
-
-
         public UnitOfWork(RealtimeQuizDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;

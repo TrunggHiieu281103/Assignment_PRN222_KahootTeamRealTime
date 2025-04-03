@@ -1,0 +1,97 @@
+﻿@model KahootTeamRealTimeAdmin.Models.RegisterModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+     <link rel="stylesheet" href="~/css/register.css"> 
+</head>
+<body>
+
+    <div class="wrapper">
+        <div class="form-header">
+            <h2>Administrator Registration</h2>
+            <p class="subtitle">Create your administrator account</p>
+        </div>
+
+        <form asp-action="Register" asp-controller="Register" method="post">
+            <div class="form-section">
+                <h3>Account Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <div class="input-container">
+                            <i class="fas fa-user icon"></i>
+                            <label for="userName">Username</label>
+                            <input type="text" class="form-control" id="userName" name="UserName" required />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-container">
+                            <i class="fas fa-lock icon"></i>
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="Password" required />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Personal Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <div class="input-container">
+                            <i class="fas fa-envelope icon"></i>
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="Email" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-container">
+                            <i class="fas fa-user-circle icon"></i>
+                            <label for="fullName">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" name="FullName" required />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <div class="input-container">
+                            <i class="fas fa-phone icon"></i>
+                            <label for="phoneNumber">Phone Number</label>
+                            <input type="tel" class="form-control" id="phoneNumber" name="PhoneNumber" required />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-container">
+                            <i class="fas fa-calendar icon"></i>
+                            <label for="dateOfBirth">Date of Birth</label>
+                            <input type="date" class="form-control" id="dateOfBirth" name="DateOfBirth" required />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="reset" class="btn btn-secondary">Reset</button>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </div>
+        </form>
+    </div>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

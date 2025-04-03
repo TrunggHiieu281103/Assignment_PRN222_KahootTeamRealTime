@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Infrastructures;
 using Repositories.Models;
 using Services.Interfaces;
@@ -49,13 +51,43 @@ namespace Services.Services
 
         public async Task<bool> ToggleAdminActiveStatusAsync(int adminId)
         {
-            var admin = _unitOfWork.AdministratorRepository.GetEntityById(adminId);
-            if (admin == null)
-                return false;
+            //var admin = _unitOfWork.AdministratorRepository.GetEntityById(adminId);
+            //if (admin == null)
+            //    return false;
 
-            _unitOfWork.AdministratorRepository.UpdateIsActive(adminId, !admin.IsActive);
-            await _unitOfWork.CompleteAsync();
+            //_unitOfWork.AdministratorRepository.UpdateIsActive(adminId, !admin.IsActive);
+            //await _unitOfWork.CompleteAsync();
             return true;
         }
+
+        public async Task<Administrator> RegisterAsync(Administrator administrator)
+        {
+            if (administrator == null)
+                throw new ArgumentNullException(nameof(administrator));
+
+    
+            var existingAdmin = await _unitOfWork.AdministratorRepository.GetByUsernameAsync(administrator.UserName);
+
+            if (existingAdmin != null)
+                throw new InvalidOperationException("Username already exists.");
+
+            
+            //administrator.Password = HashPassword(administrator.Password);
+
+            await _unitOfWork.AdministratorRepository.CreateAsync(administrator);
+            await _unitOfWork.CompleteAsync();
+
+            return administrator;
+        }
+
+        //private string HashPassword(string password)
+        //{
+        //    using (var sha256 = SHA256.Create())
+        //    {
+        //        byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+        //        return BitConverter.ToString(bytes).Replace("-", "").ToLower();
+        //    }
+        //}
+
     }
 }

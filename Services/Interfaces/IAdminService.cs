@@ -10,6 +10,8 @@ namespace Services.Interfaces
     public interface IAdminService
     {
         Task<Administrator> AuthenticateAsync(string username, string password);
+
+        Task<Administrator> RegisterAsync(Administrator administrator);
         Task<IEnumerable<Administrator>> GetAllAdministratorsAsync();
         Task<Administrator> GetAdministratorByIdAsync(int id);
         Task<Administrator> CreateAdministratorAsync(Administrator admin);

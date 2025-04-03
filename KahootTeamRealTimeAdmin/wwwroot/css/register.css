@@ -19,12 +19,12 @@ body {
 
 .wrapper {
     width: 100%;
-    max-width: 500px;
+    max-width: 800px;
     background: rgba(255, 255, 255, 0.1);
     padding: 40px;
-    border-radius: 15px;
+    border-radius: 20px;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
@@ -49,19 +49,33 @@ h2 {
 }
 
 .form-section {
-    margin-top : 30px;
     margin-bottom: 30px;
-    padding: 40px 20px 20px 20px;
+    padding: 20px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
 }
 
+    .form-section h3 {
+        color: #fff;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
 .form-group {
-    margin-bottom: 25px;
+    flex: 1;
 }
 
 .input-container {
     position: relative;
+    margin-bottom: 25px;
 }
 
 .icon {
@@ -105,73 +119,53 @@ label {
     background: transparent;
 }
 
-.form-options {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 20px;
+.form-control:focus ~ .icon {
+    color: #00ff87;
 }
 
-.remember-me {
-    display: flex;
-    align-items: center;
-    color: #fff;
-    gap: 8px;
-    cursor: pointer;
+/* Date input styling */
+input[type="date"] {
+    color-scheme: dark;
 }
 
-    .remember-me input[type="checkbox"] {
-        accent-color: #00ff87;
-        width: 16px;
-        height: 16px;
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        opacity: 0.5;
+        cursor: pointer;
     }
 
-.forgot-link {
-    color: #fff;
-    text-decoration: none;
-    font-size: 0.9rem;
+/* Buttons */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
     transition: all 0.3s ease;
 }
-
-    .forgot-link:hover {
-        color: #00ff87;
-    }
 
 .btn-primary {
-    width: 100%;
-    background: #fff;
-    color: #4A90E2;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 10px;
+    background: linear-gradient(45deg, #00ff87, #60efff);
+    color: #1a1a1a;
 }
 
-    .btn-primary:hover {
-        background: rgba(255, 255, 255, 0.9);
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-.register {
-    text-align: center;
-    margin-top: 25px;
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
     color: #fff;
 }
 
-    .register a {
-        color: #00ff87;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-        .register a:hover {
-            text-decoration: underline;
-        }
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
 
 .text-danger {
     color: #ff6b6b;
@@ -180,43 +174,31 @@ label {
     display: block;
 }
 
-.error-message {
-    background: rgba(255, 107, 107, 0.1);
-    border: 1px solid rgba(255, 107, 107, 0.2);
-    padding: 12px;
-    border-radius: 8px;
-    color: #fff;
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-    .error-message i {
-        color: #ff6b6b;
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
     }
 
-
-@media (max-width: 768px) {
     .wrapper {
-        padding: 25px;
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 2rem;
     }
 
     .form-section {
         padding: 15px;
     }
 
-    .form-options {
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
-    }
-
-    h2 {
-        font-size: 2rem;
+    .btn {
+        padding: 10px 20px;
     }
 }
 
+/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -231,4 +213,31 @@ label {
 
 .form-section {
     animation: fadeIn 0.5s ease-out forwards;
+}
+
+    .form-section:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    .form-section:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+/* Additional mobile optimizations */
+@media (max-width: 480px) {
+    .wrapper {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
 }
