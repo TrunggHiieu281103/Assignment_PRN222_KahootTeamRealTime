@@ -13,7 +13,9 @@
     {
         <h3>@Model.Question</h3>
 
-        <form method="post" class="quiz-form">
+        <div id="timer" class="timer">10</div> <!-- Hiển thị thời gian còn lại -->
+
+        <form method="post" class="quiz-form" id="quizForm">
             <input type="hidden" name="roomCode" value="@Model.RoomCode" />
             <input type="hidden" name="username" value="@Model.Username" />
 
@@ -25,8 +27,10 @@
                 </label>
             }
 
-            <button type="submit" class="submit-btn">Submit</button>
+            <button type="button" class="submit-btn" id="submitBtn">Submit</button>
         </form>
+
+        <div id="resultMessage" class="hidden"></div> <!-- Hiển thị kết quả -->
     }
     else
     {
@@ -34,4 +38,56 @@
     }
 </div>
 
-<link rel="stylesheet" href="~/css/quiz.css">
+<script>
+    let timeLeft = 10;
+    let timerElement = document.getElementById("timer");
+    let resultMessage = document.getElementById("resultMessage");
+    let quizForm = document.getElementById("quizForm");
+    let submitBtn = document.getElementById("submitBtn");
+
+    function startTimer() {
+        let countdown = setInterval(() => {
+            timeLeft--;
+            timerElement.innerText = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                submitAnswer(); // Tự động gửi khi hết thời gian
+            }
+        }, 1000);
+    }
+
+    function submitAnswer() {
+        submitBtn.disabled = true; // Vô hiệu hóa nút submit
+
+        let selectedAnswer = document.querySelector('input[name="SelectedAnswer"]:checked');
+        if (!selectedAnswer) {
+            resultMessage.innerText = "You didn't choose an answer!";
+            resultMessage.style.color = "red";
+        } else {
+            fetch(window.location.pathname, {
+                method: "POST",
+                body: new FormData(quizForm),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.isCorrect) {
+                    resultMessage.innerText = "Correct Answer!";
+                    resultMessage.style.color = "green";
+                } else {
+                    resultMessage.innerText = "Wrong Answer!";
+                    resultMessage.style.color = "red";
+                }
+
+                resultMessage.classList.remove("hidden");
+
+                setTimeout(() => {
+                    window.location.reload(); // Chuyển sang câu tiếp theo sau 4 giây
+                }, 4000);
+            });
+        }
+    }
+
+    submitBtn.addEventListener("click", submitAnswer);
+    startTimer();
+</script>

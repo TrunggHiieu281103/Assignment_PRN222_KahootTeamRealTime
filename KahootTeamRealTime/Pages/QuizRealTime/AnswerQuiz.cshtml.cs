@@ -62,16 +62,10 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
         public IActionResult OnPost(int roomCode, string username)
         {
             var room = _context.Rooms.FirstOrDefault(r => r.RoomCode == roomCode);
-            if (room == null)
-            {
-                return NotFound();
-            }
+            if (room == null) return NotFound();
 
             var user = _context.Users.FirstOrDefault(u => u.Username == username);
-            if (user == null)
-            {
-                return NotFound();
-            }
+            if (user == null) return NotFound();
 
             var roomQuestions = _context.RoomQuestions
                 .Where(rq => rq.RoomId == room.Id)
@@ -82,17 +76,23 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
 
             if (QuestionIndex >= roomQuestions.Count)
             {
-                return RedirectToPage("QuestionScores"); // Nếu hết câu hỏi, chuyển trang điểm
+                return RedirectToPage("QuestionScores");
             }
 
             var currentQuestion = roomQuestions[QuestionIndex];
+
+            bool isCorrect = false;
+            if (Guid.TryParse(SelectedAnswer, out Guid answerId))
+            {
+                isCorrect = _context.Answers.Any(a => a.Id == answerId && a.IsCorrect);
+            }
 
             var userAnswer = new UserAnswer
             {
                 UserId = user.Id,
                 RoomId = room.Id,
                 QuestionId = currentQuestion.QuestionId,
-                AnswerId = Guid.TryParse(SelectedAnswer, out Guid answerId) ? answerId : null,
+                AnswerId = Guid.TryParse(SelectedAnswer, out Guid answerGuid) ? answerGuid : null,
                 AnsweredAt = DateTime.Now
             };
 
@@ -102,7 +102,8 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
             // Tăng chỉ mục câu hỏi và lưu vào Session
             HttpContext.Session.SetInt32($"QuestionIndex_{roomCode}_{Username}", QuestionIndex + 1);
 
-            return RedirectToPage("AnswerQuiz", new { roomCode, username = Username });
+            return new JsonResult(new { isCorrect });
         }
+
     }
 }
