@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Models;
 
 namespace KahootTeamRealTime.Pages.QuizRealTime
@@ -15,22 +16,29 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
 
         public List<(string Name, int Points)> UserPoints { get; set; } = new();
 
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync(int roomCode)
         {
-            var userAnswers = _context.UserAnswers
-                .GroupBy(ua => ua.UserId)
-                .Select(group => new
-                {
-                    UserId = group.Key,
-                    Points = group.Count(ua => ua.Answer.IsCorrect) // Tính điểm bằng số câu trả lời đúng
-                })
-                .ToList();
-
-            foreach (var userAnswer in userAnswers)
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomCode == roomCode);
+            if (room == null)
             {
-                var userName = _context.Users.FirstOrDefault(u => u.Id == userAnswer.UserId)?.Username;
-                UserPoints.Add((userName ?? "Unknown", userAnswer.Points));
+                return RedirectToPage("/Error");
             }
+
+            var userScores = await _context.Scores
+                .Where(s => s.RoomId == room.Id)
+                .OrderByDescending(s => s.TotalPoints)
+                .ToListAsync();
+
+            foreach (var score in userScores)
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == score.UserId);
+                if (user != null)
+                {
+                    UserPoints.Add((user.Username, score.TotalPoints ?? 0));
+                }
+            }
+
+            return Page();
         }
     }
 }

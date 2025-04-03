@@ -12,10 +12,14 @@
     @if (!string.IsNullOrEmpty(Model.Question))
     {
         <h3>@Model.Question</h3>
+        <p><strong>Question:</strong> @(Model.QuestionIndex + 1) / @Model.TotalQuestions</p> <!-- Hiển thị số câu hỏi -->
 
-        <form method="post" class="quiz-form">
+        <div class="timer">@Model.TimeLeft</div> <!-- Hiển thị thời gian còn lại -->
+
+        <form method="post" class="quiz-form" id="quizForm">
             <input type="hidden" name="roomCode" value="@Model.RoomCode" />
             <input type="hidden" name="username" value="@Model.Username" />
+            <input type="hidden" name="questionIndex" value="@Model.QuestionIndex" id="questionIndex" />
 
             @foreach (var answer in Model.Answers)
             {
@@ -25,8 +29,10 @@
                 </label>
             }
 
-            <button type="submit" class="submit-btn">Submit</button>
+            <button type="submit" class="submit-btn" >Submit</button>
         </form>
+
+        <div id="resultMessage" class="hidden"></div> <!-- Hiển thị kết quả -->
     }
     else
     {
@@ -35,3 +41,19 @@
 </div>
 
 <link rel="stylesheet" href="~/css/quiz.css">
+
+<script>
+    let timeLeft = @Model.TimeLeft;
+    let timerElement = document.querySelector('.timer');
+
+    function updateTimer() {
+        if (timeLeft > 0) {
+            timeLeft--;
+            timerElement.innerText = timeLeft;
+        } else {
+            document.getElementById("quizForm").submit();
+        }
+    }
+
+    setInterval(updateTimer, 1000);
+</script>

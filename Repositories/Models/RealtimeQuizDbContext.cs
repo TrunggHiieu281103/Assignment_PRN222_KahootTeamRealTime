@@ -36,8 +36,11 @@ public partial class RealtimeQuizDbContext : DbContext
 
     public virtual DbSet<UserRoom> UserRooms { get; set; }
 
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     { optionsBuilder.UseSqlServer(GetConnectionString()); }
+
+  
 
     private string GetConnectionString()
     {
@@ -46,6 +49,7 @@ public partial class RealtimeQuizDbContext : DbContext
                 .AddJsonFile("appsettings.json", true, true).Build();
         return configuration["ConnectionStrings:DefaultConnection"];
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Administrator>(entity =>

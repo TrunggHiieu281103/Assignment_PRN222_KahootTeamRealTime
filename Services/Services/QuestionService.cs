@@ -57,5 +57,9 @@ namespace Services.Services
             _unitOfWork.QuestionRepository.AddQuestionToRoom(roomId, questionId);
             await _unitOfWork.CompleteAsync();
         }
+        public async Task<IEnumerable<Question>> GetQuestionsByRoomCodeAsync(int roomCode)
+        {
+            return _unitOfWork.QuestionRepository.GetQuestionsByRoomCode(roomCode);
+        }
     }
 }
