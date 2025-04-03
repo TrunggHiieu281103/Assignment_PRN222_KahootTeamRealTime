@@ -1,11 +1,8 @@
 ﻿@model IEnumerable<Repositories.Models.Room>
-
 @{
     ViewData["Title"] = "Rooms";
 }
-
 <h1>Rooms</h1>
-
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New Room</a>
 </p>
@@ -15,6 +12,7 @@
             <th>Name</th>
             <th>Room Code</th>
             <th>Created At</th>
+            <th>Status</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -26,9 +24,42 @@
                 <td>@item.RoomCode</td>
                 <td>@item.CreatedAt</td>
                 <td>
-                    <a asp-controller="Questions" asp-action="Index" asp-route-roomId="@item.Id" class="btn btn-info">Manage Questions</a>
+                    @if (item.IsActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Inactive</span>
+                    }
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a asp-controller="Questions" asp-action="Index" asp-route-roomId="@item.Id" class="btn btn-info">Manage Questions</a>
+
+                        <form asp-action="ToggleActive" asp-route-id="@item.Id" method="post" style="display: inline;">
+                            @if (item.IsActive)
+                            {
+                                <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to deactivate this room?');">
+                                    Deactivate
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-success">
+                                    Activate
+                                </button>
+                            }
+                        </form>
+                    </div>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@* <div class="mb-3">
+    <a asp-action="Index" class="btn btn-outline-primary">All Rooms</a>
+    <a asp-action="Index" asp-route-filter="active" class="btn btn-outline-success">Active Rooms</a>
+    <a asp-action="Index" asp-route-filter="inactive" class="btn btn-outline-danger">Inactive Rooms</a>
+</div> *@

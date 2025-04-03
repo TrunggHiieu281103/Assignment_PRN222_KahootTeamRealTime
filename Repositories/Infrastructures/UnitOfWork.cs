@@ -18,6 +18,10 @@ namespace Repositories.Infrastructures
         private RoomRepository _roomRepository;
         private QuestionRepository _questionRepository;
         private AnswerRepository _answerRepository;
+        private AdministratorRepository _administratorRepository;
+        private RoleRepository _roleRepository;
+
+
 
 
 
@@ -63,6 +67,33 @@ namespace Repositories.Infrastructures
                 return _answerRepository;
             }
         }
+
+        public AdministratorRepository AdministratorRepository
+        {
+            get
+            {
+                if (_administratorRepository == null)
+                {
+                    _administratorRepository = new AdministratorRepository(_context, _logger);
+                }
+                return _administratorRepository;
+            }
+        }
+
+        public RoleRepository RoleRepository
+        {
+            get
+            {
+                if (_roleRepository == null)
+                {
+                    _roleRepository = new RoleRepository(_context, _logger);
+                }
+                return _roleRepository;
+            }
+        }
+        public RealtimeQuizDbContext Context => _context;
+
+
         public async Task CompleteAsync() => await _context.SaveChangesAsync();
     }
 }
