@@ -5,50 +5,55 @@
     var roomId = ViewBag.RoomId as Guid?;
     var roomName = ViewBag.RoomName as string;
 }
+<link rel="stylesheet" href="~/css/questionManage.css">
 
-<h1>
-    @if (roomId.HasValue)
-    {
-        <span>Questions for Room: @roomName</span>
-    }
-    else
-    {
-        <span>All Questions</span>
-    }
-</h1>
+<div class="wrapper">
+    <div class="header">
+        <h1>
+            @if (roomId.HasValue)
+            {
+                <span>Questions for Room: @roomName</span>
+            }
+            else
+            {
+                <span>All Questions</span>
+            }
+        </h1>
+    </div>
 
-<p>
-    @if (roomId.HasValue)
-    {
-        <a asp-action="Create" asp-route-roomId="@roomId" class="btn btn-primary">Create New Question</a>
-        <a asp-action="AddExisting" asp-route-roomId="@roomId" class="btn btn-success">Add Existing Question</a>
-        <a asp-controller="Rooms" asp-action="Index" class="btn btn-secondary">Back to Rooms</a>
-    }
-    else
-    {
-        <a asp-action="Create" class="btn btn-primary">Create New Question</a>
-    }
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Content</th>
-            <th>Answers Count</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+    <div class="action-buttons">
+        @if (roomId.HasValue)
         {
-            <tr>
-                <td>@item.Content</td>
-                <td>@item.Answers.Count</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id" asp-route-roomId="@roomId" class="btn btn-info">Details</a>
-                    <a asp-controller="Answers" asp-action="Create" asp-route-questionId="@item.Id" asp-route-roomId="@roomId" class="btn btn-success">Add Answer</a>
-                </td>
-            </tr>
+            <a asp-action="Create" asp-route-roomId="@roomId" class="btn btn-primary">Create New Question</a>
+             @* <a asp-action="AddExisting" asp-route-roomId="@roomId" class="btn btn-success">Add Existing Question</a> *@ 
+            <a asp-controller="Rooms" asp-action="Index" class="btn btn-secondary">Back to Rooms</a>
         }
-    </tbody>
-</table>
+        else
+        {
+            <a asp-action="Create" class="btn btn-primary">Create New Question</a>
+        }
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Content</th>
+                <th>Answers Count</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Content</td>
+                    <td>@item.Answers.Count</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" asp-route-roomId="@roomId" class="btn btn-info">Details</a>
+                        <a asp-controller="Answers" asp-action="Create" asp-route-questionId="@item.Id" asp-route-roomId="@roomId" class="btn btn-success">Add Answer</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

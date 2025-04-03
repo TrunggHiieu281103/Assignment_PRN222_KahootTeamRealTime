@@ -1,69 +1,56 @@
 ﻿.wrapper {
-    max-width: 1400px;
-    margin: 4rem auto;
-    padding: 80px 60px;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 40px;
     background: #6c5ce7;
-    border-radius: 40px;
+    border-radius: 30px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
 .form-header {
     text-align: center;
-    margin-bottom: 70px;
+    margin-bottom: 40px;
 }
 
     .form-header h2 {
-        font-size: 4.5rem;
+        font-size: 3rem;
         font-weight: 600;
         color: #7fffd4;
-        margin-bottom: 30px;
-        background: none;
-        -webkit-text-fill-color: #7fffd4;
+        margin-bottom: 15px;
     }
 
     .form-header .subtitle {
-        font-size: 1.8rem;
+        font-size: 1.2rem;
         color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 50px;
+        margin-bottom: 30px;
     }
 
 .form-container {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 70px;
-    border-radius: 35px;
-    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 25px;
 }
 
 .form-section {
-    height: 600px;
-    width: 100%;
-    padding: 40px 20px;
+    padding: 40px;
     background: rgba(255, 255, 255, 0.08);
-    border-radius: 35px;
+    border-radius: 25px;
     backdrop-filter: blur(10px);
+    position: relative;
 }
 
 .input-container {
-    margin-bottom: 60px;
+    position: relative;
     width: 100%;
 }
 
-    .input-container label {
-        font-size: 2.2rem;
-        color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 35px;
-        display: block;
-        font-weight: 500;
-    }
-
 .form-control {
-    width: 100%;
-    height: 120px;
-    padding: 35px 40px 35px 100px;
-    font-size: 1.8rem;
+    width: 90%;
+    height: 60px;
+    padding: 20px 20px 20px 60px;
+    font-size: 1.1rem;
     background: rgba(255, 255, 255, 0.15);
     border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 30px;
+    border-radius: 15px;
     color: white;
 }
 
@@ -73,29 +60,29 @@
 
 .input-container .icon {
     position: absolute;
-    left: 40px;
+    left: 20px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 2.4rem;
+    font-size: 1.3rem;
     color: rgba(255, 255, 255, 0.8);
 }
 
 .form-actions {
     display: flex;
-    gap: 35px;
+    gap: 20px;
     justify-content: space-between;
-    margin-top: 70px;
+    margin-top: 40px;
 }
 
 .btn {
-    padding: 25px 45px;
-    font-size: 1.6rem;
-    border-radius: 25px;
-    min-width: 250px;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    border-radius: 15px;
+    min-width: 180px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 8px;
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -126,37 +113,43 @@
     background: rgba(255, 255, 255, 0.2);
 }
 
+.text-danger {
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    display: block;
+}
+
 @media (max-width: 768px) {
     .wrapper {
-        padding: 40px;
+        padding: 20px;
         margin: 1rem;
     }
 
     .form-header h2 {
-        font-size: 3rem;
+        font-size: 2rem;
     }
 
     .form-container {
-        padding: 40px;
+        padding: 20px;
     }
 
     .form-section {
-        padding: 40px;
-        height: auto;
+        padding: 20px;
     }
 
     .form-control {
-        height: 100px;
-        font-size: 1.6rem;
+        height: 50px;
+        font-size: 1rem;
     }
 
     .form-actions {
         flex-direction: column;
-        gap: 15px;
+        gap: 10px;
     }
 
     .btn {
         width: 100%;
-        padding: 15px 25px;
+        padding: 12px 20px;
     }
 }
