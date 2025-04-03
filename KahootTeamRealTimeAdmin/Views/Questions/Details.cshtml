@@ -3,49 +3,53 @@
 @{
     ViewData["Title"] = "Question Details";
 }
+<link rel="stylesheet" href="~/css/detailsQuestion.css">
+<div class="wrapper">
+    <div class="header">
+        <h1>Question Details</h1>
+    </div>
 
-<h1>Question Details</h1>
+    <div class="details-container">
+        <hr />
+        <dl class="row">
+            <dt>Question:</dt>
+            <dd>@Model.Content</dd>
+        </dl>
+    </div>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Question:</dt>
-        <dd class="col-sm-10">@Model.Content</dd>
-    </dl>
-</div>
+    <h2>Answers</h2>
+    <p>
+        <a asp-controller="Answers" asp-action="Create" asp-route-questionId="@Model.Id" class="btn btn-primary">Add Answer</a>
+    </p>
 
-<h2>Answers</h2>
-<p>
-    <a asp-controller="Answers" asp-action="Create" asp-route-questionId="@Model.Id" class="btn btn-primary">Add Answer</a>
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Content</th>
-            <th>Is Correct</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var answer in Model.Answers)
-        {
+    <table class="table">
+        <thead>
             <tr>
-                <td>@answer.Content</td>
-                <td>
-                    @if (answer.IsCorrect)
-                    {
-                        <span class="badge bg-success">Yes</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger">No</span>
-                    }
-                </td>
+                <th>Content</th>
+                <th>Is Correct</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var answer in Model.Answers)
+            {
+                <tr>
+                    <td>@answer.Content</td>
+                    <td>
+                        @if (answer.IsCorrect)
+                        {
+                            <span class="badge bg-success">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">No</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<div>
-    <a asp-action="Index" class="btn btn-secondary">Back to Questions</a>
+    <div>
+        <a asp-action="Index" class="btn btn-secondary">Back to Questions</a>
+    </div>
 </div>
