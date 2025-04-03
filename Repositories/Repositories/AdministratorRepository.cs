@@ -29,9 +29,10 @@ namespace Repositories.Repositories
             return _context.Administrators
                 .Include(a => a.Role)
                 .FirstOrDefault(a => a.UserName == username &&
-                                    a.Password == password &&
-                a.IsActive);
+                                     a.Password == password &&
+                                     a.IsActive == true); 
         }
+
 
         public IEnumerable<Administrator> GetAllWithRoles()
         {
@@ -49,6 +50,18 @@ namespace Repositories.Repositories
                 var entry = _context.Entry(admin);
                 entry.Property(a => a.IsActive).IsModified = true;
             }
+        }
+        public async Task<Administrator> GetByUsernameAsync(string username)
+        {
+            return await _context.Administrators
+                .FirstOrDefaultAsync(a => a.UserName == username);
+        }
+
+        public async Task<Administrator> CreateAsync(Administrator admin)
+        {
+            _context.Administrators.Add(admin);
+            //await _context.SaveChangesAsync();
+            return admin;
         }
     }
 }

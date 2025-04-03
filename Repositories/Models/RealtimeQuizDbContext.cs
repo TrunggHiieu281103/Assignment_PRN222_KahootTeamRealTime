@@ -36,7 +36,6 @@ public partial class RealtimeQuizDbContext : DbContext
 
     public virtual DbSet<UserRoom> UserRooms { get; set; }
 
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     { optionsBuilder.UseSqlServer(GetConnectionString()); }
 
@@ -47,19 +46,19 @@ public partial class RealtimeQuizDbContext : DbContext
                 .AddJsonFile("appsettings.json", true, true).Build();
         return configuration["ConnectionStrings:DefaultConnection"];
     }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Administrator>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Administ__3214EC078BC13D4C");
+            entity.HasKey(e => e.Id).HasName("PK__Administ__3214EC0758E64C72");
 
             entity.ToTable("Administrator");
 
-            entity.Property(e => e.IsActive)
-                .HasDefaultValue(true)
-                .HasColumnName("isActive");
+            entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.FullName).HasMaxLength(255);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.Password).HasMaxLength(256);
+            entity.Property(e => e.PhoneNumber).HasMaxLength(20);
             entity.Property(e => e.RoleId).HasDefaultValue(1);
             entity.Property(e => e.UserName).HasMaxLength(50);
 
@@ -71,7 +70,7 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<Answer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Answer__3214EC07182FE946");
+            entity.HasKey(e => e.Id).HasName("PK__Answer__3214EC07FD81017A");
 
             entity.ToTable("Answer");
 
@@ -85,7 +84,7 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<Question>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Question__3214EC079027C509");
+            entity.HasKey(e => e.Id).HasName("PK__Question__3214EC07173A79F1");
 
             entity.ToTable("Question");
 
@@ -95,7 +94,7 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC072002E672");
+            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC07E4BCB2FA");
 
             entity.ToTable("Role");
 
@@ -107,11 +106,11 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<Room>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Room__3214EC079F144705");
+            entity.HasKey(e => e.Id).HasName("PK__Room__3214EC076E893BF5");
 
             entity.ToTable("Room");
 
-            entity.HasIndex(e => e.RoomCode, "UQ__Room__4F9D5231851EE2C9").IsUnique();
+            entity.HasIndex(e => e.RoomCode, "UQ__Room__4F9D5231300EC1B3").IsUnique();
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedAt)
@@ -126,7 +125,7 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<RoomQuestion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__RoomQues__3214EC07A37592C4");
+            entity.HasKey(e => e.Id).HasName("PK__RoomQues__3214EC07501446F5");
 
             entity.ToTable("RoomQuestion");
 
@@ -143,7 +142,7 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<Score>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Score__3214EC07545EB8C0");
+            entity.HasKey(e => e.Id).HasName("PK__Score__3214EC0752250E37");
 
             entity.ToTable("Score");
 
@@ -161,9 +160,9 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC0751630E01");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC0767146066");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4B7A2C032").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__536C85E42E9922E0").IsUnique();
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedAt)
@@ -174,7 +173,7 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<UserAnswer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__UserAnsw__3214EC0778AAC50C");
+            entity.HasKey(e => e.Id).HasName("PK__UserAnsw__3214EC078C8E38AB");
 
             entity.ToTable("UserAnswer");
 
@@ -203,7 +202,7 @@ public partial class RealtimeQuizDbContext : DbContext
 
         modelBuilder.Entity<UserRoom>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__UserRoom__3214EC0742D07B42");
+            entity.HasKey(e => e.Id).HasName("PK__UserRoom__3214EC078D83B45F");
 
             entity.ToTable("UserRoom");
 
