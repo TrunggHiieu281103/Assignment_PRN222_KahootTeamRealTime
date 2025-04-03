@@ -5,31 +5,38 @@
     var question = ViewBag.Question as Repositories.Models.Question;
 }
 
-<h1>Create Answer</h1>
-<h4>For question: @question.Content</h4>
+<link rel="stylesheet" href="~/css/createAnswers.css">
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="wrapper">
+    <div class="header">
+        <h1>Create Answer</h1>
+        <h4>For question: @question.Content</h4>
+    </div>
+
+    <hr />
+
+    <div class="form-container">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="QuestionId" value="@question.Id" />
 
             <div class="form-group">
                 <label asp-for="Content" class="control-label">Answer Text</label>
-                <input asp-for="Content" class="form-control" />
+                <input asp-for="Content" class="form-control" placeholder="Enter your answer" />
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
 
-            <div class="form-group form-check mt-3">
+            <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsCorrect" /> Mark as correct answer
+                    <input class="form-check-input" asp-for="IsCorrect" />
+                    Mark as correct answer
                 </label>
             </div>
 
-            <div class="form-group mt-3">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-controller="Questions" asp-action="Details" asp-route-id="@question.Id" class="btn btn-secondary">Back to Question</a>
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-controller="Questions" asp-action="Details" asp-route-id="@question.Id"
+                   class="btn btn-secondary">Back to Question</a>
             </div>
         </form>
     </div>
