@@ -67,3 +67,20 @@ h3 {
     .submit-btn:hover {
         background: #45a049;
     }
+
+.timer {
+    font-size: 24px;
+    font-weight: bold;
+    color: red;
+    margin-bottom: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+#resultMessage {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+}
