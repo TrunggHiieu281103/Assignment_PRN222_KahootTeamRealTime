@@ -6,6 +6,13 @@
     border-radius: 30px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #4A90E2, #9013FE);
+}
 
 .header {
     margin-bottom: 30px;
@@ -162,5 +169,58 @@ dd {
     .table {
         display: block;
         overflow-x: auto;
+    }
+}
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.action-cell {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-danger {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+}
+
+    .btn-danger:hover {
+        background: #ff5252;
+        box-shadow: 0 5px 15px rgba(255, 82, 82, 0.3);
+    }
+
+.table .btn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    min-width: auto;
+}
+
+    .table .btn.btn-danger {
+        background: #ff6b6b;
+        color: white;
+    }
+
+.bottom-actions {
+    margin-top: 30px;
+}
+
+.btn i {
+    margin-right: 5px;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .action-cell {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .table .btn {
+        width: 100%;
+        justify-content: center;
     }
 }

@@ -60,9 +60,19 @@
     color: white;
 }
 
+.btn-danger {
+    background: #ff6b6b;
+    color: white;
+}
+
 .btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-danger:hover {
+    background: #ff5252;
+    box-shadow: 0 5px 15px rgba(255, 82, 82, 0.3);
 }
 
 .table {
@@ -101,15 +111,42 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-    .table td:last-child {
-        display: flex;
-        gap: 10px;
+.action-cell {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.table .btn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    min-width: auto;
+}
+
+    .table .btn.btn-info {
+        background: #70a1ff;
+        color: white;
     }
 
-    .table td .btn {
-        padding: 10px 20px;
-        font-size: 1rem;
+    .table .btn.btn-success {
+        background: #4cd137;
+        color: white;
     }
+
+    .table .btn.btn-danger {
+        background: #ff6b6b;
+        color: white;
+    }
+
+        .table .btn.btn-danger:hover {
+            background: #ff5252;
+            box-shadow: 0 5px 15px rgba(255, 82, 82, 0.3);
+        }
+
+.btn i {
+    margin-right: 5px;
+    font-size: 0.9rem;
+}
 
 @media (max-width: 768px) {
     .wrapper {
@@ -130,11 +167,17 @@
         overflow-x: auto;
     }
 
-        .table td:last-child {
-            flex-direction: column;
-        }
+    .action-cell {
+        flex-direction: column;
+        gap: 5px;
+    }
 
     .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .table .btn {
         width: 100%;
         justify-content: center;
     }
