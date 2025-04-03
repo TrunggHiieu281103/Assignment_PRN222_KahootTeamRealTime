@@ -12,7 +12,7 @@
     @if (!string.IsNullOrEmpty(Model.Question))
     {
         <h3>@Model.Question</h3>
-        <p><strong>Question:</strong> @Model.QuestionIndex / @Model.TotalQuestions</p> <!-- Hiển thị số câu hỏi -->
+        <p><strong>Question:</strong> @(Model.QuestionIndex + 1) / @Model.TotalQuestions</p> <!-- Hiển thị số câu hỏi -->
 
         <div class="timer">@Model.TimeLeft</div> <!-- Hiển thị thời gian còn lại -->
 

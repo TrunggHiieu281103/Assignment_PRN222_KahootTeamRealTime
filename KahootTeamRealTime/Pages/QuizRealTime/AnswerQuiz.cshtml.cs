@@ -61,7 +61,7 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int roomCode, string username, int questionIndex, Guid? selectedAnswerId)
+        public async Task<IActionResult> OnPostAsync(int roomCode, string username, int questionIndex, Guid? SelectedAnswer)
         {
             var room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomCode == roomCode);
             if (room == null)
@@ -89,22 +89,10 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
 
             // **Xử lý khi người chơi không chọn câu trả lời**
             bool isCorrect = false;
-            if (selectedAnswerId.HasValue)
+            if (SelectedAnswer.HasValue)
             {
-                isCorrect = currentQuestion.Answers.Any(a => a.Id == selectedAnswerId.Value && a.IsCorrect);
+                isCorrect = _context.Answers.Any(a => a.Id == SelectedAnswer.Value && a.IsCorrect == true);
             }
-
-            // **Lưu UserAnswer với AnswerId = null nếu không chọn**
-            var userAnswer = new UserAnswer
-            {
-                Id = Guid.NewGuid(),
-                UserId = user.Id,
-                RoomId = room.Id,
-                QuestionId = currentQuestion.Id,
-                AnswerId = selectedAnswerId, // **Có thể null**
-                AnsweredAt = DateTime.UtcNow
-            };
-            _context.UserAnswers.Add(userAnswer);
 
             // Cập nhật điểm trong bảng Score
             var userScore = await _context.Scores
@@ -138,6 +126,7 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
             // Chuyển đến câu hỏi tiếp theo
             return RedirectToPage("/QuizRealTime/AnswerQuiz", new { roomCode, username, questionIndex = questionIndex + 1 });
         }
+
 
     }
 }
