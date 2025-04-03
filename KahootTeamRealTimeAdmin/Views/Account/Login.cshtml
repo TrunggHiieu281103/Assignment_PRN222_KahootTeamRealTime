@@ -9,37 +9,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login - Kahoot Team RealTime Admin</title>
     <link rel="stylesheet" href="~/css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Kahoot Team RealTime Admin</h1>
-
     <div class="wrapper">
+        <div class="form-header">
+            <h2>Welcome Back!</h2>
+            <p class="subtitle">Sign in to your account</p>
+        </div>
+
         <form asp-action="Login" asp-controller="Account" method="post">
-            <h2>Login</h2>
+            <div class="form-section">
+                <div class="form-group">
+                    <div class="input-container">
+                        <i class="fas fa-user icon"></i>
+                        <label for="UserNameOrEmail">Username or Email</label>
+                        <input asp-for="UserNameOrEmail" class="form-control" required />
+                        <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
+                    </div>
+                </div>
 
-            <div class="input-field">
-                <input asp-for="UserNameOrEmail" required>
-                <label asp-for="UserNameOrEmail">Enter your email</label>
+                <div class="form-group">
+                    <div class="input-container">
+                        <i class="fas fa-lock icon"></i>
+                        <label for="Password">Password</label>
+                        <input asp-for="Password" type="password" class="form-control" required />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-            <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
 
-            <div class="input-field">
-                <input asp-for="Password" type="password" required>
-                <label asp-for="Password">Enter your password</label>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Sign In</button>
             </div>
-            <span asp-validation-for="Password" class="text-danger"></span>
 
-            <button type="submit">Log In</button>
-
-            @* <div class="register"> *@
-            @*     <p>Don't have an account? <a href="#">Register</a></p> *@
-            @* </div> *@
+            <div class="register">
+                <p>Don't have an account? <a href="@Url.Action("Register","Account")">Register</a></p>
+            </div>
 
             @if (!ViewData.ModelState.IsValid)
             {
-                <p class="text-danger">Tên đăng nhập hoặc mật khẩu không đúng.</p>
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Invalid username or password.</span>
+                </div>
             }
         </form>
     </div>

@@ -53,8 +53,6 @@ namespace KahootTeamRealTimeAdmin
                 name: "default",
                 pattern: "{controller=Account}/{action=Login}/{id?}");
 
-
-
             app.Run();
         }
     }
