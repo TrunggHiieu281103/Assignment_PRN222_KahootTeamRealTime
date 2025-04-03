@@ -4,11 +4,13 @@
     ViewData["Title"] = "Question Scores";
 }
 
-<h2>Points after Quiz</h2>
+<h2>Final Scores</h2>
 
 <ul>
     @foreach (var user in Model.UserPoints)
     {
-        <li>@user.Name: @user.Points</li>
+        <li><strong>@user.Name</strong>: @user.Points points</li>
     }
 </ul>
+
+<a href="/QuizRealTime/JoinRoom">Back to Home</a>

@@ -2,108 +2,84 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Repositories.Models;
 using Microsoft.AspNetCore.Http;
+using Services.Services;
+using Services.Interfaces;
 
 namespace KahootTeamRealTime.Pages.QuizRealTime
 {
     public class AnswerQuizModel : PageModel
     {
-        private readonly RealtimeQuizDbContext _context;
+        private readonly IQuestionService _questionService;
+        private readonly IRoomService _roomService;
 
-        public AnswerQuizModel(RealtimeQuizDbContext context)
+        public AnswerQuizModel(IQuestionService questionService, IRoomService roomService)
         {
-            _context = context;
+            _questionService = questionService;
+            _roomService = roomService;
         }
 
         public string Question { get; set; }
         public List<(string Id, string Content)> Answers { get; set; } = new();
-        public int QuestionIndex { get; set; } // Chỉ mục câu hỏi hiện tại
-        public int RoomCode { get; set; } 
+        public int QuestionIndex { get; set; }
+        public int RoomCode { get; set; }
         public string Username { get; set; }
+        public int TotalQuestions { get; set; }
 
         [BindProperty]
         public string SelectedAnswer { get; set; }
 
-        public void OnGet(int roomCode = 100000, string username = "Amoi")
+        public async Task<IActionResult> OnGetAsync(int roomCode = 100000, string username = "Amoi", int questionIndex = 0)
         {
-            var room = _context.Rooms.FirstOrDefault(r => r.RoomCode == roomCode);
+            var room = await _roomService.GetRoomByCodeAsync(roomCode);
             if (room == null)
             {
-                return;
+                return RedirectToPage("/Error");
             }
 
             RoomCode = roomCode;
             Username = username;
 
-            // Lấy chỉ mục câu hỏi từ Session (mặc định là 0 nếu chưa có)
-            QuestionIndex = HttpContext.Session.GetInt32($"QuestionIndex_{roomCode}_{username}") ?? 0;
+            var roomQuestions = await _questionService.GetQuestionsByRoomCodeAsync(roomCode);
+            var questionList = roomQuestions.ToList();
+            TotalQuestions = questionList.Count;
 
-            var roomQuestions = _context.RoomQuestions
-                .Where(rq => rq.RoomId == room.Id)
-                .OrderBy(rq => rq.QuestionId)
-                .ToList();
-
-            if (roomQuestions.Any() && QuestionIndex < roomQuestions.Count)
+            if (questionList.Count == 0 || questionIndex >= questionList.Count)
             {
-                var currentQuestion = roomQuestions[QuestionIndex]; // Lấy câu hỏi hiện tại
-                Question = _context.Questions
-                    .Where(q => q.Id == currentQuestion.QuestionId)
-                    .Select(q => q.Content)
-                    .FirstOrDefault();
-
-                Answers = _context.Answers
-                    .Where(a => a.QuestionId == currentQuestion.QuestionId)
-                    .Select(a => new { a.Id, a.Content })
-                    .ToList()
-                    .Select(a => (a.Id.ToString(), a.Content))
-                    .ToList();
+                return RedirectToPage("/QuestionScores"); // Nếu hết câu hỏi thì kết thúc quiz
             }
+
+            var currentQuestion = questionList[questionIndex];
+
+            QuestionIndex = questionIndex;
+            Question = currentQuestion.Content;
+            Answers = currentQuestion.Answers.Select(a => (a.Id.ToString(), a.Content)).ToList();
+
+            return Page();
         }
 
-        public IActionResult OnPost(int roomCode, string username)
+        public async Task<IActionResult> OnPostAsync(int roomCode, string username, int questionIndex)
         {
-            var room = _context.Rooms.FirstOrDefault(r => r.RoomCode == roomCode);
-            if (room == null) return NotFound();
-
-            var user = _context.Users.FirstOrDefault(u => u.Username == username);
-            if (user == null) return NotFound();
-
-            var roomQuestions = _context.RoomQuestions
-                .Where(rq => rq.RoomId == room.Id)
-                .OrderBy(rq => rq.QuestionId)
-                .ToList();
-
-            QuestionIndex = HttpContext.Session.GetInt32($"QuestionIndex_{roomCode}_{Username}") ?? 0;
-
-            if (QuestionIndex >= roomQuestions.Count)
+            var room = await _roomService.GetRoomByCodeAsync(roomCode);
+            if (room == null)
             {
-                return RedirectToPage("QuestionScores");
+                return RedirectToPage("/Error");
             }
 
-            var currentQuestion = roomQuestions[QuestionIndex];
+            var roomQuestions = await _questionService.GetQuestionsByRoomCodeAsync(roomCode);
+            var questionList = roomQuestions.ToList();
 
+            // Kiểm tra đáp án đúng
             bool isCorrect = false;
-            if (Guid.TryParse(SelectedAnswer, out Guid answerId))
+            if (questionIndex < questionList.Count)
             {
-                isCorrect = _context.Answers.Any(a => a.Id == answerId && a.IsCorrect);
+                var currentQuestion = questionList[questionIndex];
+                isCorrect = currentQuestion.Answers.Any(a => a.Id.ToString() == SelectedAnswer && a.IsCorrect);
             }
 
-            var userAnswer = new UserAnswer
+            return new JsonResult(new
             {
-                UserId = user.Id,
-                RoomId = room.Id,
-                QuestionId = currentQuestion.QuestionId,
-                AnswerId = Guid.TryParse(SelectedAnswer, out Guid answerGuid) ? answerGuid : null,
-                AnsweredAt = DateTime.Now
-            };
-
-            _context.UserAnswers.Add(userAnswer);
-            _context.SaveChanges();
-
-            // Tăng chỉ mục câu hỏi và lưu vào Session
-            HttpContext.Session.SetInt32($"QuestionIndex_{roomCode}_{Username}", QuestionIndex + 1);
-
-            return new JsonResult(new { isCorrect });
+                isCorrect
+            });
         }
-
     }
 }
