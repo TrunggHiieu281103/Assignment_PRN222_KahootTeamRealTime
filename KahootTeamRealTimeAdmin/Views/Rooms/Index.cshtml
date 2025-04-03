@@ -2,64 +2,93 @@
 @{
     ViewData["Title"] = "Rooms";
 }
-<h1>Rooms</h1>
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Room</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Room Code</th>
-            <th>Created At</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.RoomCode</td>
-                <td>@item.CreatedAt</td>
-                <td>
-                    @if (item.IsActive)
-                    {
-                        <span class="badge bg-success">Active</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger">Inactive</span>
-                    }
-                </td>
-                <td>
-                    <div class="btn-group">
-                        <a asp-controller="Questions" asp-action="Index" asp-route-roomId="@item.Id" class="btn btn-info">Manage Questions</a>
 
-                        <form asp-action="ToggleActive" asp-route-id="@item.Id" method="post" style="display: inline;">
-                            @if (item.IsActive)
-                            {
-                                <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to deactivate this room?');">
-                                    Deactivate
-                                </button>
-                            }
-                            else
-                            {
-                                <button type="submit" class="btn btn-success">
-                                    Activate
-                                </button>
-                            }
-                        </form>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="~/css/room.css">
+</head>
+<body>
 
-@* <div class="mb-3">
-    <a asp-action="Index" class="btn btn-outline-primary">All Rooms</a>
-    <a asp-action="Index" asp-route-filter="active" class="btn btn-outline-success">Active Rooms</a>
-    <a asp-action="Index" asp-route-filter="inactive" class="btn btn-outline-danger">Inactive Rooms</a>
-</div> *@
+    <div class="wrapper">
+        <div class="header-section">
+            <h2>Room Management</h2>
+            <p class="subtitle">Manage your kahoot rooms</p>
+        </div>
+
+        <div class="action-section">
+            <a asp-action="Create" class="btn-primary">
+                <i></i>
+                Create New Room
+            </a>
+        </div>
+
+        <div class="table-section">
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Room Code</th>
+                            <th>Created At</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td><span class="room-code">@item.RoomCode</span></td>
+                                <td>@item.CreatedAt.ToString()</td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="status-badge active">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge inactive">Inactive</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a asp-controller="Questions" asp-action="Index" asp-route-roomId="@item.Id"
+                                           class="btn btn-info">
+                                            <i class="fas fa-tasks"></i>
+                                            Manage
+                                        </a>
+
+                                        <form asp-action="ToggleActive" asp-route-id="@item.Id" method="post">
+                                            @if (item.IsActive)
+                                            {
+                                                <button type="submit" class="btn btn-warning"
+                                                        onclick="return confirm('Are you sure you want to deactivate this room?');">
+                                                    <i class="fas fa-power-off"></i>
+                                                    Deactivate
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button type="submit" class="btn btn-success">
+                                                    <i class="fas fa-power-off"></i>
+                                                    Activate
+                                                </button>
+                                            }
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

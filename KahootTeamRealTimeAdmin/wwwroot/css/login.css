@@ -196,7 +196,7 @@ label {
         color: #ff6b6b;
     }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
     .wrapper {
         padding: 25px;
@@ -217,7 +217,6 @@ label {
     }
 }
 
-/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
