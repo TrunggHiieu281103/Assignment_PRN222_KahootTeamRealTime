@@ -1,26 +1,66 @@
-﻿using KahootTeamRealTimeAdmin.Models;
+﻿using System.Security.Claims;
+using KahootTeamRealTimeAdmin.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Services.Interfaces;
 
 namespace KahootTeamRealTimeAdmin.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly IAdminService _adminService;
+
+        public AccountController(IAdminService adminService)
+        {
+            _adminService = adminService;
+        }
+
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-
-        //Login 
         [HttpPost]
-        public IActionResult Login(LoginModel model)
+        public async Task<IActionResult> Login(LoginModel model)
         {
             if (ModelState.IsValid)
             {
-                if (model.UserNameOrEmail == "admin" && model.Password == "password")
+                var admin = await _adminService.AuthenticateAsync(model.UserNameOrEmail, model.Password);
+
+                if (admin != null)
                 {
-                    return RedirectToAction("Index", "Home");
+                    // Create authentication cookie
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, admin.UserName),
+                        new Claim(ClaimTypes.Role, admin.Role.RoleName),
+                        new Claim("AdminId", admin.Id.ToString())
+                    };
+
+                    var claimsIdentity = new ClaimsIdentity(
+                        claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = model.RememberMe
+                    };
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity),
+                        authProperties);
+
+                    // Redirect based on role
+                    if (admin.Role.RoleName == "Admin")
+                    {
+                        return RedirectToAction("Index", "Administrators");
+                    }
+                    else if (admin.Role.RoleName == "Manager")
+                    {
+                        return RedirectToAction("Index", "Rooms");
+                    }
                 }
                 else
                 {
@@ -28,6 +68,18 @@ namespace KahootTeamRealTimeAdmin.Controllers
                 }
             }
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

@@ -44,5 +44,23 @@ namespace Services.Services
         {
             return _unitOfWork.RoomRepository.GetEntityByGuid(id);
         }
+
+        public async Task<bool> ToggleRoomActiveStatusAsync(Guid roomId)
+        {
+            var room = _unitOfWork.RoomRepository.GetEntityByGuid(roomId);
+
+            if (room == null)
+                return false;
+
+
+            room.IsActive = !room.IsActive;
+
+            _unitOfWork.RoomRepository.UpdateEntity(room);
+
+
+            await _unitOfWork.CompleteAsync();
+
+            return true;
+        }
     }
 }

@@ -13,6 +13,8 @@ public partial class Room
 
     public DateTime? CreatedAt { get; set; }
 
+    public bool IsActive { get; set; }
+
     public virtual ICollection<RoomQuestion> RoomQuestions { get; set; } = new List<RoomQuestion>();
 
     public virtual ICollection<Score> Scores { get; set; } = new List<Score>();

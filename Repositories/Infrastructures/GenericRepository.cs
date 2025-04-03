@@ -37,7 +37,18 @@ namespace Repositories.Infrastructures
             return null;
         }
 
-        public void UpdateEntity(TEntity entity) => _context.Update(entity).State = EntityState.Modified;
+        //public void UpdateEntity(TEntity entity) => _context.Update(entity).State = EntityState.Modified;
+
+        public virtual void UpdateEntity(TEntity entity)
+        {
+            var entry = _context.Entry(entity);
+            entry.State = EntityState.Modified;
+
+            if (entity is Room roomEntity)
+            {
+                entry.Property("RoomCode").IsModified = false;
+            }
+        }
 
 
         public virtual IEnumerable<TEntity> GetAll()
@@ -56,6 +67,8 @@ namespace Repositories.Infrastructures
         {
             _dbSet.Remove(entity);
         }
+
+
 
     }
 }
