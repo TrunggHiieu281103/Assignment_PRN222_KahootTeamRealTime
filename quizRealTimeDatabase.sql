@@ -145,3 +145,39 @@ SET TotalPoints = (
     WHERE ua.UserId = Score.UserId AND ua.RoomId = Score.RoomId AND a.IsCorrect = 1
 );
 GO
+
+
+ALTER TABLE [RealtimeQuizDB].[dbo].[Room]
+ADD [isActive] BIT NOT NULL DEFAULT 1;
+
+
+
+CREATE TABLE [RealtimeQuizDB].[dbo].[Role] (
+    [Id] INT IDENTITY(1,1) PRIMARY KEY,
+    [RoleName] NVARCHAR(50) NOT NULL,
+    [isActive] BIT NOT NULL DEFAULT 1
+);
+
+CREATE TABLE [RealtimeQuizDB].[dbo].[Administrator] (
+    [Id] INT IDENTITY(1,1) PRIMARY KEY,
+    [UserName] NVARCHAR(50) NOT NULL,
+    [Password] NVARCHAR(256) NOT NULL,
+    [isActive] BIT NOT NULL DEFAULT 1
+);
+
+
+ALTER TABLE [RealtimeQuizDB].[dbo].[Administrator]
+ADD [RoleId] INT NOT NULL DEFAULT 1;
+
+ALTER TABLE [RealtimeQuizDB].[dbo].[Administrator]
+ADD CONSTRAINT FK_Administrator_Role
+FOREIGN KEY ([RoleId]) REFERENCES [RealtimeQuizDB].[dbo].[Role]([Id]);
+
+INSERT INTO Role (RoleName, IsActive) VALUES ('Admin', 1);
+INSERT INTO Role (RoleName, IsActive) VALUES ('Manager', 1);
+
+INSERT INTO Administrator (UserName, Password, IsActive, RoleId) 
+VALUES ('admin', 'admin123', 1, 1);
+
+INSERT INTO Administrator (UserName, Password, IsActive, RoleId) 
+VALUES ('manager', 'manager123', 1, 2);

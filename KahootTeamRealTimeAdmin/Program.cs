@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Infrastructures;
 using Repositories.Models;
@@ -16,11 +17,19 @@ namespace KahootTeamRealTimeAdmin
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<RealtimeQuizDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+    });
 
             builder.Services.AddScoped<UnitOfWork>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IRoomService, RoomService>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
             builder.Services.AddScoped<IAnswerService, AnswerService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
 
             var app = builder.Build();
 
@@ -36,6 +45,7 @@ namespace KahootTeamRealTimeAdmin
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

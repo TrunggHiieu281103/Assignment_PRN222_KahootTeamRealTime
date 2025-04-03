@@ -1,0 +1,58 @@
+﻿<!-- KahootTeamRealTimeAdmin/Views/Administrators/Index.cshtml -->
+@model IEnumerable<Repositories.Models.Administrator>
+@{
+    ViewData["Title"] = "Administrators";
+}
+
+<h1>Administrators</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.UserName</td>
+                <td>@item.Role.RoleName</td>
+                <td>
+                    @if (item.IsActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Inactive</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+
+                    <form asp-action="ToggleActive" asp-route-id="@item.Id" method="post" style="display: inline;">
+                        @if (item.IsActive)
+                        {
+                            <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to deactivate this admin?');">
+                                Deactivate
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-success">
+                                Activate
+                            </button>
+                        }
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

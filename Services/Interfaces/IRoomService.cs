@@ -13,5 +13,7 @@ namespace Services.Interfaces
         Task<Room> GetRoomByIdAsync(Guid id);
         Task<Room> GetRoomByCodeAsync(int roomCode);
         Task<IEnumerable<Room>> GetAllRoomsAsync();
+
+        Task<bool> ToggleRoomActiveStatusAsync(Guid roomId);
     }
 }
