@@ -4,6 +4,7 @@ using Repositories.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,6 +39,23 @@ namespace Repositories.Infrastructures
 
         public void UpdateEntity(TEntity entity) => _context.Update(entity).State = EntityState.Modified;
 
+
+        public virtual IEnumerable<TEntity> GetAll()
+        {
+            return _dbSet.ToList();
+        }
+        public virtual IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _dbSet.Where(predicate).ToList();
+        }
+        public virtual TEntity GetEntityByGuid(Guid id)
+        {
+            return _dbSet.Find(id);
+        }
+        public virtual void Remove(TEntity entity)
+        {
+            _dbSet.Remove(entity);
+        }
 
     }
 }
