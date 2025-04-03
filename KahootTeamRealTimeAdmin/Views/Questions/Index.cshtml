@@ -25,7 +25,7 @@
         @if (roomId.HasValue)
         {
             <a asp-action="Create" asp-route-roomId="@roomId" class="btn btn-primary">Create New Question</a>
-             @* <a asp-action="AddExisting" asp-route-roomId="@roomId" class="btn btn-success">Add Existing Question</a> *@ 
+             <a asp-action="AddExisting" asp-route-roomId="@roomId" class="btn btn-success">Add Existing Question</a> 
             <a asp-controller="Rooms" asp-action="Index" class="btn btn-secondary">Back to Rooms</a>
         }
         else
