@@ -21,6 +21,13 @@
         </div>
 
         <form asp-action="Register" asp-controller="Register" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
             <div class="form-section">
                 <h3>Account Information</h3>
                 <div class="form-row">

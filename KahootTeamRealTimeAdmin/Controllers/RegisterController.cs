@@ -17,7 +17,7 @@ namespace KahootTeamRealTimeAdmin.Controllers
         [HttpGet] 
         public IActionResult Register()
         {
-            return View();
+            return View("~/Views/Account/Register.cshtml");
         }
 
         [HttpPost] 
@@ -25,7 +25,7 @@ namespace KahootTeamRealTimeAdmin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View("~/Views/Account/Register.cshtml", model);
             }
 
             try
@@ -50,7 +50,7 @@ namespace KahootTeamRealTimeAdmin.Controllers
             catch (InvalidOperationException ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return View(model);
+                return View("~/Views/Account/Register.cshtml", model);
             }
         }
     }
