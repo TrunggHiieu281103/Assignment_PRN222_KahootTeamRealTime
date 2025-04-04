@@ -4,17 +4,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Models;
+using Services.Interfaces;
 
 namespace KahootTeamRealTime.Pages.QuizRealTime
 {
     public class JoinRoomModel : PageModel
     {
-        private readonly RealtimeQuizDbContext _context;
+        private readonly IRoomService _roomService;
+        private readonly IUserService _userService;
         private readonly IHubContext<QuizHub> _hubContext;
 
-        public JoinRoomModel(RealtimeQuizDbContext context, IHubContext<QuizHub> hubContext)
+        public JoinRoomModel(IRoomService roomService, IUserService userService, IHubContext<QuizHub> hubContext)
         {
-            _context = context;
+            _roomService = roomService;
+            _userService = userService;
             _hubContext = hubContext;
         }
 
@@ -24,29 +27,23 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var room = _context.Rooms.FirstOrDefault(r => r.RoomCode == RoomCode);
+            var room = await _roomService.GetRoomByCodeAsync(RoomCode);
             if (room == null)
             {
                 ErrorMessage = "Room không tồn tại!";
                 return Page();
             }
 
-            var user = _context.Users.FirstOrDefault(u => u.Username == Username);
+            var user = await _userService.GetUserByUserName(Username);
             if (user == null)
             {
-                user = new User { Username = Username };
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
+                user = await _userService.CreateUserAsync(Username);
             }
 
-            var existingUserRoom = _context.UserRooms
-                .FirstOrDefault(ur => ur.UserId == user.Id && ur.RoomId == room.Id);
-            if (existingUserRoom == null)
+            bool isUserInRoom = await _roomService.IsUserInRoom(user.Id, room.Id);
+            if (!isUserInRoom)
             {
-                _context.UserRooms.Add(new UserRoom { UserId = user.Id, RoomId = room.Id });
-                await _context.SaveChangesAsync();
-
-                // Gửi sự kiện đến tất cả client để cập nhật danh sách người dùng
+                await _roomService.AddUserToRoom(user.Id, room.Id);
                 await _hubContext.Clients.All.SendAsync("ReceiveUserJoined", RoomCode);
             }
 

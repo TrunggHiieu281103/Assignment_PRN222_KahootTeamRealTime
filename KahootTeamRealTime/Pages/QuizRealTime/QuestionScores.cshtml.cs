@@ -2,40 +2,27 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Models;
+using Services.Interfaces;
 
 namespace KahootTeamRealTime.Pages.QuizRealTime
 {
     public class QuestionScoresModel : PageModel
     {
-        private readonly RealtimeQuizDbContext _context;
+        private readonly IRoomService _roomService;
 
-        public QuestionScoresModel(RealtimeQuizDbContext context)
+        public QuestionScoresModel(IRoomService roomService)
         {
-            _context = context;
+            _roomService = roomService;
         }
 
         public List<(string Name, int Points)> UserPoints { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(int roomCode)
         {
-            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomCode == roomCode);
-            if (room == null)
+            UserPoints = await _roomService.GetUserScoresByRoomCode(roomCode);
+            if (!UserPoints.Any())
             {
                 return RedirectToPage("/Error");
-            }
-
-            var userScores = await _context.Scores
-                .Where(s => s.RoomId == room.Id)
-                .OrderByDescending(s => s.TotalPoints)
-                .ToListAsync();
-
-            foreach (var score in userScores)
-            {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == score.UserId);
-                if (user != null)
-                {
-                    UserPoints.Add((user.Username, score.TotalPoints ?? 0));
-                }
             }
 
             return Page();
