@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Services.Services;
 using Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
+using KahootTeamRealTime.HubSginalR;
 
 namespace KahootTeamRealTime.Pages.QuizRealTime
 {
@@ -13,20 +15,23 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
         private readonly IQuestionService _questionService;
         private readonly IRoomService _roomService;
         private readonly RealtimeQuizDbContext _context;
+        private readonly IHubContext<QuizHub> _hubContext;
 
-        public AnswerQuizModel(IQuestionService questionService, IRoomService roomService, RealtimeQuizDbContext context)
+
+        public AnswerQuizModel(IQuestionService questionService, IRoomService roomService, RealtimeQuizDbContext context, IHubContext<QuizHub> hubContext)
         {
             _questionService = questionService;
             _roomService = roomService;
             _context = context;
+            _hubContext = hubContext;
         }
 
-        public string Question { get; set; }
+        public string Question { get; set; } = "N/A";
         public List<(string Id, string Content)> Answers { get; set; } = new();
         public int QuestionIndex { get; set; }
         public int RoomCode { get; set; }
-        public string Username { get; set; }
-        public int TotalQuestions { get; set; }
+        public string Username { get; set; } = "N/A";
+        public int TotalQuestions { get; set; } = 0;
         public int TimeLeft { get; set; } = 10; // 10 giây mỗi câu hỏi
 
         [BindProperty]
@@ -120,6 +125,8 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
             // Nếu hết câu hỏi, chuyển sang trang tổng kết điểm
             if (questionIndex >= roomQuestions.Count - 1)
             {
+                await _hubContext.Clients.All.SendAsync("ReceiveUserFinished", roomCode);
+
                 return RedirectToPage("/QuizRealTime/QuestionScores", new { roomCode });
             }
 

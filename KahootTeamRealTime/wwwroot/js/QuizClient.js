@@ -6,13 +6,18 @@ function initializeSignalR() {
         .configureLogging(signalR.LogLevel.Information)
         .build();
 
-    connection.on("ReceiveUserJoined", function (roomCode) {
-        updateRoomUser(roomCode);
+    connection.on("ReceiveUserJoined", function () {
+        updateRoomUser();
     });
 
-    function updateRoomUser(roomCode) {
+    connection.on("ReceiveUserFinished", function () {
+        updatUserFinalScore();
+    });
+
+    function updateRoomUser() {
         // Get the current URL parameters
         const urlParams = new URLSearchParams(window.location.search);
+        const roomCode = urlParams.get("roomCode") || "N/A";
         const username = urlParams.get("username") || "N/A";
 
         // Fetch updated room users
@@ -29,6 +34,30 @@ function initializeSignalR() {
                 const newUserList = doc.querySelector("#userList");
                 if (newUserList) {
                     document.querySelector("#userList").outerHTML = newUserList.outerHTML;
+                }
+            })
+            .catch(err => console.error("Error updating user list: ", err));
+    }
+
+    function updatUserFinalScore() {
+        // Get the current URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomCode = urlParams.get("roomCode") || "N/A";
+
+        // Fetch updated room users
+        fetch(`/QuizRealTime/QuestionScores?roomCode=${roomCode}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch updated user list");
+                }
+                return response.text();
+            })
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+                const newUserFinalScore = doc.querySelector("#listFinalScore");
+                if (newUserFinalScore) {
+                    document.querySelector("#listFinalScore").outerHTML = newUserFinalScore.outerHTML;
                 }
             })
             .catch(err => console.error("Error updating user list: ", err));
@@ -56,7 +85,7 @@ function initializeSignalR() {
 
 // Initialize SignalR on page load
 document.addEventListener("DOMContentLoaded", function () {
-    if (document.querySelector("#userList")) {
-        initializeSignalR();
+    if (document.querySelector("#userList") || document.querySelector("#listFinalScore")) {
+        initializeSignalR(); 
     }
 });
