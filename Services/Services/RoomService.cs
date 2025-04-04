@@ -45,6 +45,8 @@ namespace Services.Services
             return _unitOfWork.RoomRepository.GetEntityByGuid(id);
         }
 
+
+
         public async Task<bool> ToggleRoomActiveStatusAsync(Guid roomId)
         {
             var room = _unitOfWork.RoomRepository.GetEntityByGuid(roomId);
@@ -61,6 +63,36 @@ namespace Services.Services
             await _unitOfWork.CompleteAsync();
 
             return true;
+        }
+
+        public async Task<List<Question>> GetRoomQuestion(Guid roomId)
+        {
+            return  _unitOfWork.RoomRepository.GetRoomQuestion(roomId);
+        }
+
+        public Task<bool> RemoveUserFromRoom(Guid userId, Guid roomId)
+        {
+
+            return _unitOfWork.RoomRepository.RemoveUserFromRoom(userId, roomId);
+        }
+
+        public async Task<bool> IsUserInRoom(Guid userId, Guid roomId)
+        {
+            return await _unitOfWork.RoomRepository.IsUserInRoom(userId, roomId);
+        }
+
+        public async Task<bool> AddUserToRoom(Guid userId, Guid roomId)
+        {
+            return await _unitOfWork.RoomRepository.AddUserToRoom(userId, roomId);
+        }
+        public async Task<List<(string Name, int Points)>> GetUserScoresByRoomCode(int roomCode)
+        {
+            return await _unitOfWork.RoomRepository.GetUserScoresByRoomCode(roomCode);
+        }
+
+        public async Task<List<string>> GetUsernamesByRoomCode(int roomCode)
+        {
+            return await _unitOfWork.RoomRepository.GetUsernamesByRoomCode(roomCode);
         }
     }
 }

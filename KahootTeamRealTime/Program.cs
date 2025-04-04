@@ -16,6 +16,9 @@ namespace KahootTeamRealTime
             builder.Services.AddScoped<UnitOfWork>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
             builder.Services.AddScoped<IRoomService, RoomService>();
+            builder.Services.AddScoped<IScoreService, ScoreService>();
+            builder.Services.AddScoped<IUserService,UserService >();
+            builder.Services.AddScoped<IAnswerService,AnswerService>();
             builder.Services.AddScoped<UnitOfWork>();
             // Add services to the container.
             builder.Services.AddRazorPages();

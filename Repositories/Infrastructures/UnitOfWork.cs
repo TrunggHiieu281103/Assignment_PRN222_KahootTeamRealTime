@@ -21,6 +21,8 @@ namespace Repositories.Infrastructures
         private AdministratorRepository _administratorRepository;
         private RoleRepository _roleRepository;
         private UserAnswerRepository _userAnswerRepository;
+        private UserRepository _userRepository;
+        private ScoreRepository _scoreRepository;
         public UnitOfWork(RealtimeQuizDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
@@ -97,6 +99,29 @@ namespace Repositories.Infrastructures
                     _userAnswerRepository = new UserAnswerRepository(_context, _logger);
                 }
                 return _userAnswerRepository;
+            }
+        }
+
+        public UserRepository UserRepository
+        {
+            get
+            {
+                if (_userRepository == null)
+                {
+                    _userRepository = new UserRepository(_context, _logger);
+                }
+                return _userRepository;
+            }
+        }
+        public ScoreRepository ScoreRepository
+        {
+            get
+            {
+                if (_scoreRepository == null)
+                {
+                    _scoreRepository = new ScoreRepository(_context, _logger);
+                }
+                return _scoreRepository;
             }
         }
         public RealtimeQuizDbContext Context => _context;
