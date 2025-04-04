@@ -9,7 +9,9 @@ namespace Services.Interfaces
 {
     public interface IAnswerService
     {
+        Task<Answer> GetAnswerByIdAsync(Guid id);
         Task<Answer> CreateAnswerAsync(Guid questionId, string content, bool isCorrect);
         Task<IEnumerable<Answer>> GetAnswersForQuestionAsync(Guid questionId);
+        Task<bool> DeleteAnswerAsync(Guid answerId);
     }
 }

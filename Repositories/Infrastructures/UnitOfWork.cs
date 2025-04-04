@@ -20,7 +20,7 @@ namespace Repositories.Infrastructures
         private AnswerRepository _answerRepository;
         private AdministratorRepository _administratorRepository;
         private RoleRepository _roleRepository;
-
+        private UserAnswerRepository _userAnswerRepository;
         public UnitOfWork(RealtimeQuizDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
@@ -85,6 +85,18 @@ namespace Repositories.Infrastructures
                     _roleRepository = new RoleRepository(_context, _logger);
                 }
                 return _roleRepository;
+            }
+        }
+
+        public UserAnswerRepository UserAnswerRepository
+        {
+            get
+            {
+                if (_userAnswerRepository == null)
+                {
+                    _userAnswerRepository = new UserAnswerRepository(_context, _logger);
+                }
+                return _userAnswerRepository;
             }
         }
         public RealtimeQuizDbContext Context => _context;

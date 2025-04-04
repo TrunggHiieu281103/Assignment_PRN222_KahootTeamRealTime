@@ -42,6 +42,46 @@ namespace KahootTeamRealTimeAdmin.Controllers
             var question = await _questionService.GetQuestionByIdAsync(model.QuestionId);
             ViewBag.Question = question;
             return View(model);
+        }// GET: Answers/Delete/{id}
+        public async Task<IActionResult> Delete(Guid id, Guid? roomId)
+        {
+            var answer = await _answerService.GetAnswerByIdAsync(id);
+            if (answer == null)
+                return NotFound();
+
+            var questionId = answer.QuestionId;
+
+            bool success = await _answerService.DeleteAnswerAsync(id);
+            if (!success)
+            {
+                TempData["Error"] = "Failed to delete answer. It may be used in active rooms.";
+            }
+
+            // Redirect back to the question details
+            return RedirectToAction("Details", "Questions", new { id = questionId, roomId });
         }
+
+        // POST: Answers/Delete/{id}
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id, Guid? roomId)
+        {
+            var answer = await _answerService.GetAnswerByIdAsync(id);
+            if (answer == null)
+                return NotFound();
+
+            var questionId = answer.QuestionId;
+
+            bool success = await _answerService.DeleteAnswerAsync(id);
+            if (!success)
+            {
+                TempData["Error"] = "Failed to delete answer. It may be used in active rooms.";
+            }
+
+            // Redirect back to the question details
+            return RedirectToAction("Details", "Questions", new { id = questionId, roomId });
+        }
+
+
     }
 }

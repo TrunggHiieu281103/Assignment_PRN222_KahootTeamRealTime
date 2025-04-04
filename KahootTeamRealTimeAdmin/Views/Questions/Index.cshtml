@@ -20,6 +20,13 @@
             }
         </h1>
     </div>
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
     <div class="action-buttons">
         @if (roomId.HasValue)
@@ -27,6 +34,7 @@
             <a asp-action="Create" asp-route-roomId="@roomId" class="btn btn-primary">Create New Question</a>
             <a asp-action="AddExisting" asp-route-roomId="@roomId" class="btn btn-success">Add Existing Question</a>
             <a asp-controller="Rooms" asp-action="Index" class="btn btn-secondary">Back to Rooms</a>
+            <input type = "hidden" id = "current-room-id" value = "@roomId" />
         }
         else
         {
@@ -45,7 +53,7 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+                <tr data-question-id="@item.Id">
                     <td>@item.Content</td>
                     <td>@item.Answers.Count</td>
                     <td class="action-cell">
@@ -65,3 +73,8 @@
         </tbody>
     </table>
 </div>
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/question-management.js"></script>
+}

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Infrastructures;
 using Repositories.Models;
+using Services.HubSignalR;
 using Services.Interfaces;
 using Services.Services;
 
@@ -15,6 +16,7 @@ namespace KahootTeamRealTimeAdmin
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSignalR();
             builder.Services.AddDbContext<RealtimeQuizDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -40,7 +42,7 @@ namespace KahootTeamRealTimeAdmin
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -52,7 +54,7 @@ namespace KahootTeamRealTimeAdmin
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Account}/{action=Login}/{id?}");
-
+            app.MapHub<Services.HubSignalR.QuizHub>("/quizHub");
             app.Run();
         }
     }

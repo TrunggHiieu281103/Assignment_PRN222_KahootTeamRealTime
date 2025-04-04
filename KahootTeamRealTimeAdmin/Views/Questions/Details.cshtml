@@ -36,7 +36,7 @@
         <tbody>
             @foreach (var answer in Model.Answers)
             {
-                <tr>
+                <tr data-answer-id="@answer.Id">
                     <td>@answer.Content</td>
                     <td>
                         @if (answer.IsCorrect)
@@ -66,3 +66,8 @@
         </a>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/question-management.js"></script>
+}

@@ -103,5 +103,60 @@ namespace KahootTeamRealTimeAdmin.Controllers
             await _questionService.AddQuestionToRoomAsync(roomId, questionId);
             return RedirectToAction(nameof(Index), new { roomId });
         }
+
+        // GET: Questions/Delete/{id}
+        public async Task<IActionResult> Delete(Guid id, Guid? roomId)
+        {
+            var question = await _questionService.GetQuestionByIdAsync(id);
+            if (question == null)
+            {
+                return NotFound();
+            }
+
+            // If roomId is provided, we're just removing the question from this room
+            if (roomId.HasValue)
+            {
+                bool success = await _questionService.RemoveQuestionFromRoomAsync(roomId.Value, id);
+                if (!success)
+                {
+                    TempData["Error"] = "Failed to remove question from room.";
+                }
+                return RedirectToAction(nameof(Index), new { roomId });
+            }
+            else
+            {
+                // If no roomId, we're deleting the question entirely
+                bool success = await _questionService.DeleteQuestionAsync(id);
+                if (!success)
+                {
+                    TempData["Error"] = "Failed to delete question. It may be used in active rooms.";
+                }
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id, Guid? roomId)
+        {
+            if (roomId.HasValue)
+            {
+                bool success = await _questionService.RemoveQuestionFromRoomAsync(roomId.Value, id);
+                if (!success)
+                {
+                    TempData["Error"] = "Failed to remove question from room.";
+                }
+                return RedirectToAction(nameof(Index), new { roomId });
+            }
+            else
+            {
+                bool success = await _questionService.DeleteQuestionAsync(id);
+                if (!success)
+                {
+                    TempData["Error"] = "Failed to delete question. It may be used in active rooms.";
+                }
+                return RedirectToAction(nameof(Index));
+            }
+        }
     }
 }

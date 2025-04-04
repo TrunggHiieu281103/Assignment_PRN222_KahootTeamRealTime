@@ -68,5 +68,27 @@ namespace Repositories.Repositories
                 .ToList();
         }
 
+        public Question GetQuestionWithRelationships(Guid id)
+        {
+            return _context.Questions
+                .Include(q => q.Answers)
+                .Include(q => q.RoomQuestions)
+                    .ThenInclude(rq => rq.Room)
+                .Include(q => q.UserAnswers)
+                .FirstOrDefault(q => q.Id == id);
+        }
+
+        public void RemoveRoomQuestions(Guid questionId)
+        {
+            var roomQuestions = _context.RoomQuestions
+                .Where(rq => rq.QuestionId == questionId)
+                .ToList();
+
+            foreach (var roomQuestion in roomQuestions)
+            {
+                _context.RoomQuestions.Remove(roomQuestion);
+            }
+        }
+
     }
 }
