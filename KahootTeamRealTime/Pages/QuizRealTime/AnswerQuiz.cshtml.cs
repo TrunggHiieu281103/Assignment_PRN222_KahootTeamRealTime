@@ -37,7 +37,7 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
         [BindProperty]
         public string SelectedAnswer { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int roomCode = 100000, string username = "Amoi", int questionIndex = 0)
+        public async Task<IActionResult> OnGetAsync(int roomCode , string username, int questionIndex = 0)
         {
             var room = await _roomService.GetRoomByCodeAsync(roomCode);
             if (room == null)
@@ -92,19 +92,13 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
                 return RedirectToPage("/Error");
             }
 
-            // **Xử lý khi người chơi không chọn câu trả lời**
-            bool isCorrect = false;
-            if (SelectedAnswer.HasValue)
-            {
-                isCorrect = _context.Answers.Any(a => a.Id == SelectedAnswer.Value && a.IsCorrect == true);
-            }
-
-            // Cập nhật điểm trong bảng Score
+            // **Kiểm tra nếu người chơi tham gia lại từ câu đầu tiên thì reset điểm**
             var userScore = await _context.Scores
                 .FirstOrDefaultAsync(s => s.UserId == user.Id && s.RoomId == room.Id);
 
             if (userScore == null)
             {
+                // Nếu user chưa có điểm, tạo mới
                 userScore = new Score
                 {
                     Id = Guid.NewGuid(),
@@ -113,6 +107,18 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
                     TotalPoints = 0
                 };
                 _context.Scores.Add(userScore);
+            }
+            else if (questionIndex == 0)
+            {
+                // Nếu userScore tồn tại và họ bắt đầu từ câu đầu tiên, reset điểm
+                userScore.TotalPoints = 0;
+            }
+
+            // **Xử lý khi người chơi không chọn câu trả lời**
+            bool isCorrect = false;
+            if (SelectedAnswer.HasValue)
+            {
+                isCorrect = _context.Answers.Any(a => a.Id == SelectedAnswer.Value && a.IsCorrect == true);
             }
 
             if (isCorrect)
@@ -125,7 +131,18 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
             // Nếu hết câu hỏi, chuyển sang trang tổng kết điểm
             if (questionIndex >= roomQuestions.Count - 1)
             {
+
+                var roomUser = await _context.UserRooms
+            .FirstOrDefaultAsync(ru => ru.UserId == user.Id && ru.RoomId == room.Id);
+
+                if (roomUser != null)
+                {
+                    _context.UserRooms.Remove(roomUser);
+                    await _context.SaveChangesAsync();
+
+                }
                 await _hubContext.Clients.All.SendAsync("ReceiveUserFinished", roomCode);
+                await _hubContext.Clients.All.SendAsync("ReceiveUserJoined", roomCode);
 
                 return RedirectToPage("/QuizRealTime/QuestionScores", new { roomCode });
             }
