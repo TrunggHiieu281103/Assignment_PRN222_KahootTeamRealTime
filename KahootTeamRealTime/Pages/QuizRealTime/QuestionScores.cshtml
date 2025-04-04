@@ -9,7 +9,7 @@
     <form  class="scores">
     <h2 class="header">Final Scores</h2>
 
-<ul>
+<ul id="listFinalScore">
     @foreach (var user in Model.UserPoints)
     {
         <li><strong>@user.Name</strong>: @user.Points points</li>
@@ -19,3 +19,6 @@
 </div>
 
 <a href="/QuizRealTime/JoinRoom">Back to Home</a>
+
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/QuizClient.js"></script>
