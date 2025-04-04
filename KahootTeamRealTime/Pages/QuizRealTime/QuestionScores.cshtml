@@ -2,9 +2,12 @@
 @model KahootTeamRealTime.Pages.QuizRealTime.QuestionScoresModel
 @{
     ViewData["Title"] = "Question Scores";
+    Layout = null;
 }
-
-<h2>Final Scores</h2>
+<link rel="stylesheet" href="~/css/score.css">
+<div class="wrapper">
+    <form  class="scores">
+    <h2 class="header">Final Scores</h2>
 
 <ul>
     @foreach (var user in Model.UserPoints)
@@ -12,5 +15,7 @@
         <li><strong>@user.Name</strong>: @user.Points points</li>
     }
 </ul>
+    </form>
+</div>
 
 <a href="/QuizRealTime/JoinRoom">Back to Home</a>

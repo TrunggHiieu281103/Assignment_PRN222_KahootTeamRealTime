@@ -2,31 +2,51 @@
 @model KahootTeamRealTime.Pages.QuizRealTime.RoomUsersModel
 @{
     ViewData["Title"] = "Room Users";
+    Layout = null;
 }
-<h2>Room Users</h2>
-<p>Room Code: <span id="roomCode">@Model.RoomCode</span></p>
-<p>Username: <span id="username">@Model.Username</span></p>
+<div class="wrapper">
+    <div class="header">
+        <h2>Room Users</h2>
+    </div>
 
-<ul id="userList">
-    @foreach (var user in Model.Users)
-    {
-        <li>@user</li>
-    }
-</ul>
+    <div class="room-info">
+        <p>Room Code: <span id="roomCode">@Model.RoomCode</span></p>
+        <p>Username: <span id="username">@Model.Username</span></p>
+    </div>
 
-<form method="post" asp-page-handler="LeaveRoom">
-    <input type="hidden" name="roomCode" value="@Model.RoomCode" />
-    <input type="hidden" name="username" value="@Model.Username" />
-    <button type="submit">Leave Room</button>
-</form>
+    <ul id="userList">
+        @foreach (var user in Model.Users)
+        {
+            <li>@user</li>
+        }
+    </ul>
 
-<form method="get" asp-page="AnswerQuiz">
-    <input type="hidden" name="username" value="@Model.Username" />
-    <input type="hidden" name="roomCode" value="@Model.RoomCode" />
-    <button type="submit">Start Quiz</button>
-</form>
+    <div class="action-buttons">
+        <form method="post" asp-page-handler="LeaveRoom">
+            <input type="hidden" name="roomCode" value="@Model.RoomCode" />
+            <input type="hidden" name="username" value="@Model.Username" />
+            <button type="submit">
+                <i class="fas fa-sign-out-alt"></i>
+                Leave Room
+            </button>
+        </form>
+
+        <form method="get" asp-page="AnswerQuiz">
+            <input type="hidden" name="username" value="@Model.Username" />
+            <input type="hidden" name="roomCode" value="@Model.RoomCode" />
+            <button type="submit">
+                <i class="fas fa-play"></i>
+                Start Quiz
+            </button>
+        </form>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="~/css/room.css">
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/QuizClient.js"></script>
 
 <link rel="stylesheet" href="~/css/room.css">
-
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/QuizClient.js"></script>

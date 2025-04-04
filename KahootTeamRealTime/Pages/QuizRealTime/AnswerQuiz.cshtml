@@ -2,45 +2,61 @@
 @model KahootTeamRealTime.Pages.QuizRealTime.AnswerQuizModel
 @{
     ViewData["Title"] = "Answer Quiz";
+    Layout = null;
 }
-<h2>Room Code: <span id="roomCode">@Model.RoomCode</span></h2>
-<h2>Username: <span id="username">@Model.Username</span></h2>
+<link rel="stylesheet" href="~/css/quiz.css">
 
-<div class="quiz-container">
-    <h1>Quizzing!</h1>
+<div class="wrapper">
+    <div class="header">
+        <h2>Quizzing!</h2>
+    </div>
+
+    <div class="room-info">
+        <p>Room Code: <span id="roomCode">@Model.RoomCode</span></p>
+        <p>Username: <span id="username">@Model.Username</span></p>
+        @if (!string.IsNullOrEmpty(Model.Question))
+        {
+            <p>Question: <span>@(Model.QuestionIndex + 1) / @Model.TotalQuestions</span></p>
+            <p>Time Left: <span class="timer">@Model.TimeLeft</span></p>
+        }
+    </div>
 
     @if (!string.IsNullOrEmpty(Model.Question))
     {
-        <h3>@Model.Question</h3>
-        <p><strong>Question:</strong> @(Model.QuestionIndex + 1) / @Model.TotalQuestions</p> <!-- Hiển thị số câu hỏi -->
-
-        <div class="timer">@Model.TimeLeft</div> <!-- Hiển thị thời gian còn lại -->
+        <div class="question-container">
+            <h3>@Model.Question</h3>
+        </div>
 
         <form method="post" class="quiz-form" id="quizForm">
             <input type="hidden" name="roomCode" value="@Model.RoomCode" />
             <input type="hidden" name="username" value="@Model.Username" />
             <input type="hidden" name="questionIndex" value="@Model.QuestionIndex" id="questionIndex" />
 
-            @foreach (var answer in Model.Answers)
-            {
-                <label class="answer-option">
-                    <input type="radio" name="SelectedAnswer" value="@answer.Id" required>
-                    <span>@answer.Content</span>
-                </label>
-            }
+            <div class="answer-grid">
+                @foreach (var answer in Model.Answers)
+                {
+                    <label class="answer-option">
+                        <input type="radio" name="SelectedAnswer" value="@answer.Id" required>
+                        <span>@answer.Content</span>
+                    </label>
+                }
+            </div>
 
-            <button type="submit" class="submit-btn" >Submit</button>
+            <div class="action-buttons">
+                <button type="submit" class="submit-btn">Submit Answer</button>
+            </div>
         </form>
-
-        <div id="resultMessage" class="hidden"></div> <!-- Hiển thị kết quả -->
+        <div id="resultMessage" class="hidden"></div>
     }
     else
     {
-        <p>No questions available.</p>
+        <div class="no-questions">
+            <p>No questions available.</p>
+        </div>
     }
 </div>
 
-<link rel="stylesheet" href="~/css/quiz.css">
+
 
 <script>
     let timeLeft = @Model.TimeLeft;

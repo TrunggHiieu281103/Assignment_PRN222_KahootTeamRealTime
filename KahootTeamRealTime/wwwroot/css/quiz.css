@@ -1,86 +1,221 @@
-﻿
-.quiz-container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 400px;
+﻿/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-h3 {
-    font-size: 18px;
-    margin-bottom: 20px;
-}
-
-.quiz-form {
+body {
+    background: #6c5ce7;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
 }
 
-.answer-option {
-    background: #f0f0f0;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
+.wrapper {
+    width: 100%;
+    max-width: 800px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
-    .answer-option:hover {
-        background: #ddd;
-    }
-
-    .answer-option input {
-        display: none;
-    }
-
-    .answer-option span {
-        display: block;
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    .answer-option input:checked + span {
-        background: #4CAF50;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-    }
-
-.submit-btn {
-    background: #4CAF50;
+/* Header styles */
+.header {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
     color: white;
-    font-size: 16px;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
+    padding: 20px;
+    text-align: center;
 }
 
-    .submit-btn:hover {
-        background: #45a049;
+    .header h2 {
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+/* Room info styles */
+.room-info {
+    background-color: #f9fafb;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+    .room-info p {
+        font-size: 16px;
+        color: #4b5563;
+        margin: 0;
+    }
+
+    .room-info span {
+        font-weight: 600;
+        color: #111827;
     }
 
 .timer {
-    font-size: 24px;
-    font-weight: bold;
-    color: red;
-    margin-bottom: 10px;
+    color: #ef4444;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* Question container */
+.question-container {
+    padding: 32px 20px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+    .question-container h3 {
+        font-size: 24px;
+        color: #111827;
+        line-height: 1.4;
+    }
+
+/* Answer grid */
+.quiz-form {
+    padding: 16px 20px 32px;
+}
+
+.answer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.answer-option {
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: block;
+    word-break: break-word;
+}
+
+    .answer-option:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .answer-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .answer-option span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 16px;
+        min-height: 80px;
+        width: 100%;
+        font-size: 16px;
+        text-align: center;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        background-color: white;
+        color: #4b5563;
+        transition: all 0.2s ease;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+
+    /* Radio button styles */
+    .answer-option input[type="radio"]:checked + span {
+        background-color: #dbeafe;
+        border-color: #3b82f6;
+        color: #1e40af;
+        font-weight: 600;
+    }
+
+    /* Color variations for answers */
+    .answer-option:nth-child(1) span {
+        border-left: 6px solid #ef4444;
+    }
+
+    .answer-option:nth-child(2) span {
+        border-left: 6px solid #3b82f6;
+    }
+
+    .answer-option:nth-child(3) span {
+        border-left: 6px solid #10b981;
+    }
+
+    .answer-option:nth-child(4) span {
+        border-left: 6px solid #f59e0b;
+    }
+
+/* Button styles */
+.action-buttons {
+    text-align: center;
+}
+
+.submit-btn {
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+    .submit-btn:hover {
+        background-color: #4338ca;
+    }
+
+/* Result message */
+#resultMessage {
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
 }
 
 .hidden {
     display: none;
 }
 
-#resultMessage {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 10px;
+/* No questions state */
+.no-questions {
+    padding: 64px 20px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 18px;
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+    .answer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .room-info {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .header h2 {
+        font-size: 24px;
+    }
+
+    .question-container h3 {
+        font-size: 20px;
+    }
 }

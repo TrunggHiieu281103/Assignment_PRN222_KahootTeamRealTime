@@ -1,22 +1,49 @@
 ﻿@page
 @model KahootTeamRealTime.Pages.QuizRealTime.JoinRoomModel
 @{
+
     ViewData["Title"] = "Join Room";
+
+    Layout = null;
 }
+<link rel="stylesheet" href="~/css/joinRoom.css">
+<div class="wrapper">
+    <div class="header">
+        <h2>Join a Quiz Room</h2>
+    </div>
 
-<h2>Join a Quiz Room</h2>
+    <form method="post" class="join-form">
+        <div class="form-group">
+            <label>Room Code:</label>
+            <div class="input-container">
+                <i class="fas fa-door-open"></i>
+                <input type="number" asp-for="RoomCode" required placeholder="Enter room code" />
+            </div>
+        </div>
 
-<form method="post">
-    <label>Room Code:</label>
-    <input type="number" asp-for="RoomCode" required />
+        <div class="form-group">
+            <label>Username:</label>
+            <div class="input-container">
+                <i class="fas fa-user"></i>
+                <input type="text" asp-for="Username" required placeholder="Enter your username" />
+            </div>
+        </div>
 
-    <label>Username:</label>
-    <input type="text" asp-for="Username" required />
+        <button type="submit" class="btn-join">
+            <i class="fas fa-sign-in-alt"></i>
+            Join Room
+        </button>
 
-    <button type="submit">Join Room</button>
-</form>
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                @Model.ErrorMessage
+            </div>
+        }
+    </form>
+</div>
 
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <p style="color: red;">@Model.ErrorMessage</p>
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 }
