@@ -14,20 +14,16 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
     {
         private readonly IQuestionService _questionService;
         private readonly IRoomService _roomService;
-        private readonly IUserService _userService;
-        private readonly IScoreService _scoreService;
-        private readonly IAnswerService _answerService;
+        private readonly RealtimeQuizDbContext _context;
         private readonly IHubContext<QuizHub> _hubContext;
 
 
-        public AnswerQuizModel(IQuestionService questionService, IRoomService roomService, IHubContext<QuizHub> hubContext, IUserService userService, IScoreService scoreService, IAnswerService answerService)
+        public AnswerQuizModel(IQuestionService questionService, IRoomService roomService, RealtimeQuizDbContext context, IHubContext<QuizHub> hubContext)
         {
             _questionService = questionService;
             _roomService = roomService;
+            _context = context;
             _hubContext = hubContext;
-            _userService = userService;
-            _scoreService = scoreService;
-            _answerService = answerService;
         }
 
         public string Question { get; set; } = "N/A";
@@ -41,7 +37,7 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
         [BindProperty]
         public string SelectedAnswer { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int roomCode , string username, int questionIndex = 0)
+        public async Task<IActionResult> OnGetAsync(int roomCode, string username, int questionIndex = 0)
         {
             var room = await _roomService.GetRoomByCodeAsync(roomCode);
             if (room == null)
@@ -72,41 +68,57 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
 
         public async Task<IActionResult> OnPostAsync(int roomCode, string username, int questionIndex, Guid? SelectedAnswer)
         {
-            var room = await _roomService.GetRoomByCodeAsync(roomCode);
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomCode == roomCode);
             if (room == null)
             {
                 return RedirectToPage("/Error");
             }
 
-            var roomQuestions = await _roomService.GetRoomQuestion(room.Id);
+            var roomQuestions = await _context.RoomQuestions
+                .Where(rq => rq.RoomId == room.Id)
+                .Select(rq => rq.Question)
+                .ToListAsync();
+
             if (questionIndex >= roomQuestions.Count)
             {
                 return RedirectToPage("/QuizRealTime/QuestionScores", new { roomCode });
             }
 
-            var user = await _userService.GetUserByUserName(username);
+            var currentQuestion = roomQuestions[questionIndex];
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (user == null)
             {
                 return RedirectToPage("/Error");
             }
 
-            // **Lấy hoặc tạo điểm số**
-            var userScore = await _scoreService.GetUserScore(user.Id, room.Id);
+            // **Kiểm tra nếu người chơi tham gia lại từ câu đầu tiên thì reset điểm**
+            var userScore = await _context.Scores
+                .FirstOrDefaultAsync(s => s.UserId == user.Id && s.RoomId == room.Id);
+
             if (userScore == null)
             {
-                userScore = await _scoreService.AddUserScore(user.Id, room.Id);
+                // Nếu user chưa có điểm, tạo mới
+                userScore = new Score
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = user.Id,
+                    RoomId = room.Id,
+                    TotalPoints = 0
+                };
+                _context.Scores.Add(userScore);
             }
             else if (questionIndex == 0)
             {
-                userScore.TotalPoints = 0; // Reset điểm nếu người chơi bắt đầu lại từ đầu
+                // Nếu userScore tồn tại và họ bắt đầu từ câu đầu tiên, reset điểm
+                userScore.TotalPoints = 0;
             }
 
-            // **Kiểm tra câu trả lời đúng**
+            // **Xử lý khi người chơi không chọn câu trả lời**
             bool isCorrect = false;
             if (SelectedAnswer.HasValue)
             {
-                var answer = await _answerService.GetAnswerByIdAsync(SelectedAnswer.Value);
-                isCorrect = answer != null && answer.IsCorrect;
+                isCorrect = _context.Answers.Any(a => a.Id == SelectedAnswer.Value && a.IsCorrect == true);
             }
 
             if (isCorrect)
@@ -114,18 +126,31 @@ namespace KahootTeamRealTime.Pages.QuizRealTime
                 userScore.TotalPoints += 100;
             }
 
-            // **Nếu hết câu hỏi, chuyển trang tổng kết**
+            await _context.SaveChangesAsync();
+
+            // Nếu hết câu hỏi, chuyển sang trang tổng kết điểm
             if (questionIndex >= roomQuestions.Count - 1)
             {
-                await _roomService.RemoveUserFromRoom(user.Id, room.Id);
+
+                var roomUser = await _context.UserRooms
+            .FirstOrDefaultAsync(ru => ru.UserId == user.Id && ru.RoomId == room.Id);
+
+                if (roomUser != null)
+                {
+                    _context.UserRooms.Remove(roomUser);
+                    await _context.SaveChangesAsync();
+
+                }
                 await _hubContext.Clients.All.SendAsync("ReceiveUserFinished", roomCode);
                 await _hubContext.Clients.All.SendAsync("ReceiveUserJoined", roomCode);
 
                 return RedirectToPage("/QuizRealTime/QuestionScores", new { roomCode });
             }
 
+            // Chuyển đến câu hỏi tiếp theo
             return RedirectToPage("/QuizRealTime/AnswerQuiz", new { roomCode, username, questionIndex = questionIndex + 1 });
         }
+
 
     }
 }
